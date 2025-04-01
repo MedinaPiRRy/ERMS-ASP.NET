@@ -1,0 +1,53 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table users {
+  id integer [primary key]
+  username varchar
+  password_hash varchar
+  role varchar
+  created_at timestamp
+}
+
+Table employees {
+  id integer [primary key]
+  user_id integer [not null]
+  first_name varchar
+  last_name varchar
+  email varchar
+  phone varchar
+  position varchar
+  manager_id integer
+  hire_date timestamp
+}
+
+Table projects {
+  id integer [primary key]
+  name varchar
+  description text
+  start_date date
+  end_date date
+  status varchar
+  created_at timestamp
+}
+
+Table tasks {
+  id integer [primary key]
+  title varchar
+  description text
+  priority varchar
+  status varchar
+  due_date date
+  project_id integer [not null]
+  assigned_employee_id integer [not null]
+  created_at timestamp
+}
+
+Ref: employees.user_id > users.id
+
+Ref: employees.manager_id > employees.id
+
+Ref: tasks.project_id > projects.id
+
+Ref: tasks.assigned_employee_id > employees.id
+
