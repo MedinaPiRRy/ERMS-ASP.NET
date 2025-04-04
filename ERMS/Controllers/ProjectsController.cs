@@ -24,7 +24,7 @@ namespace ERMS.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var projects = await _api.GetAllAsync();
+            var projects = await _api.GetAllAsync(); // Fetch all projects from the API
             return View(projects);
         }
 
@@ -32,7 +32,7 @@ namespace ERMS.Controllers
         {
             if (id == null) return NotFound();
 
-            var project = await _api.GetByIdAsync(id.Value);
+            var project = await _api.GetByIdAsync(id.Value); // Fetch project by ID from the API
             if (project == null) return NotFound();
 
             return View(project);
@@ -40,7 +40,7 @@ namespace ERMS.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var employees = (await _employeeApi.GetAllAsync());
+            var employees = (await _employeeApi.GetAllAsync()); // Fetch all employees from the API
 
             ViewBag.AllEmployees = new MultiSelectList(employees, "Id", "FullName");
             return View();
@@ -50,20 +50,20 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Project project, int[] AssignedEmployeeIds)
         {
-            ModelState.Remove("AssignedEmployees");
+            ModelState.Remove("AssignedEmployees"); // Remove the AssignedEmployees from ModelState to avoid validation errors
 
-            project.AssignedEmployees = (await _employeeApi.GetAllAsync())
+            project.AssignedEmployees = (await _employeeApi.GetAllAsync()) // Fetch all employees from the API
                 .Where(e => AssignedEmployeeIds.Contains(e.Id))
                 .ToList();
 
             if (!ModelState.IsValid) {
-                var allEmployees = await _employeeApi.GetAllAsync();
-                ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", AssignedEmployeeIds);
+                var allEmployees = await _employeeApi.GetAllAsync(); // Fetch all employees from the API
+                ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", AssignedEmployeeIds); // Makes sure employees are displayed
 
                 return View(project);
             };
 
-            var success = await _api.CreateAsync(project);
+            var success = await _api.CreateAsync(project); // Create project via API
             if (!success) ModelState.AddModelError("", "Error creating project.");
 
             return RedirectToAction(nameof(Index));
@@ -73,12 +73,12 @@ namespace ERMS.Controllers
         {
             if (id == null) return NotFound();
 
-            var project = await _api.GetByIdAsync(id.Value);
+            var project = await _api.GetByIdAsync(id.Value); // Fetch project by ID from the API
             if (project == null) return NotFound();
 
-            var employees = await _employeeApi.GetAllAsync();
-            var selected = project.AssignedEmployees?.Select(e => e.Id);
-            ViewBag.AllEmployees = new MultiSelectList(employees, "Id", "FullName", selected);
+            var employees = await _employeeApi.GetAllAsync(); // Fetch all employees from the API
+            var selected = project.AssignedEmployees?.Select(e => e.Id); // Get selected employee IDs
+            ViewBag.AllEmployees = new MultiSelectList(employees, "Id", "FullName", selected); // Makes sure employees are displayed
 
             return View(project);
         }
@@ -87,27 +87,27 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Project project, int[] AssignedEmployeeIds)
         {
-            ModelState.Remove("AssignedEmployees");
+            ModelState.Remove("AssignedEmployees"); // Remove the AssignedEmployees from ModelState to avoid validation errors
 
             if (id != project.Id) return NotFound();
 
-            project.AssignedEmployees = (await _employeeApi.GetAllAsync())
+            project.AssignedEmployees = (await _employeeApi.GetAllAsync()) // Fetch all employees from the API
                 .Where(e => AssignedEmployeeIds.Contains(e.Id))
                 .ToList();
 
             if (!ModelState.IsValid) {
-                var employees = await _employeeApi.GetAllAsync();
-                ViewBag.AllEmployees = new MultiSelectList(employees, "Id", "FullName", AssignedEmployeeIds);
+                var employees = await _employeeApi.GetAllAsync(); // Fetch all employees from the API
+                ViewBag.AllEmployees = new MultiSelectList(employees, "Id", "FullName", AssignedEmployeeIds); // Makes sure employees are displayed
                 return View(project);
             };
 
-            var success = await _api.UpdateAsync(project);
+            var success = await _api.UpdateAsync(project); // Update project via API
             if (!success) ModelState.AddModelError("", "Error updating project.");
 
-            var allEmployees = await _employeeApi.GetAllAsync();
-            var selected = project.AssignedEmployees?.Select(e => e.Id);
+            var allEmployees = await _employeeApi.GetAllAsync(); // Fetch all employees from the API
+            var selected = project.AssignedEmployees?.Select(e => e.Id); // Get selected employee IDs
 
-            ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", selected);
+            ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", selected); // Makes sure employees are displayed
 
             return RedirectToAction(nameof(Index));
         }
@@ -116,7 +116,7 @@ namespace ERMS.Controllers
         {
             if (id == null) return NotFound();
 
-            var project = await _api.GetByIdAsync(id.Value);
+            var project = await _api.GetByIdAsync(id.Value); // Fetch project by ID from the API
             if (project == null) return NotFound();
 
             return View(project);
@@ -126,13 +126,13 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var success = await _api.DeleteAsync(id);
+            var success = await _api.DeleteAsync(id);   // Delete project via API
 
             if (!success)
             {
                 Console.WriteLine($"DELETE failed: {id}");
                 ModelState.AddModelError("", "Error deleting project. Please try again.");
-                var project = await _api.GetByIdAsync(id);
+                var project = await _api.GetByIdAsync(id); // Fetch project by ID from the API
                 return View("Delete", project); // Redisplay Delete view with message
             }
 

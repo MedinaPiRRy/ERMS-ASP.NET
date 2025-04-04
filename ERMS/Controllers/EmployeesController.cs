@@ -22,7 +22,7 @@ namespace ERMS.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var employees = await _api.GetAllAsync();
+            var employees = await _api.GetAllAsync(); // Fetch all employees from the API
             return View(employees);
         }
 
@@ -30,7 +30,7 @@ namespace ERMS.Controllers
         {
             if (id == null) return NotFound();
 
-            var employee = await _api.GetByIdAsync(id.Value);
+            var employee = await _api.GetByIdAsync(id.Value); // Fetch employee by ID from the API
             if (employee == null) return NotFound();
 
             return View(employee);
@@ -47,7 +47,7 @@ namespace ERMS.Controllers
         {
             if (!ModelState.IsValid) return View(employee);
 
-            var success = await _api.CreateAsync(employee);
+            var success = await _api.CreateAsync(employee); // Create employee via API
             if (!success) ModelState.AddModelError("", "Error creating employee.");
 
             return RedirectToAction(nameof(Index));
@@ -57,7 +57,7 @@ namespace ERMS.Controllers
         {
             if (id == null) return NotFound();
 
-            var employee = await _api.GetByIdAsync(id.Value);
+            var employee = await _api.GetByIdAsync(id.Value); // Fetch employee by ID from the API
             if (employee == null) return NotFound();
 
             return View(employee);
@@ -70,7 +70,7 @@ namespace ERMS.Controllers
             if (id != employee.Id) return NotFound();
             if (!ModelState.IsValid) return View(employee);
 
-            var success = await _api.UpdateAsync(employee);
+            var success = await _api.UpdateAsync(employee); // Update employee via API
             if (!success) ModelState.AddModelError("", "Error updating employee.");
 
             return RedirectToAction(nameof(Index));
@@ -80,7 +80,7 @@ namespace ERMS.Controllers
         {
             if (id == null) return NotFound();
 
-            var employee = await _api.GetByIdAsync(id.Value);
+            var employee = await _api.GetByIdAsync(id.Value); // Fetch employee by ID from the API
             if (employee == null) return NotFound();
 
             return View(employee);
@@ -90,9 +90,10 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _api.DeleteAsync(id);
+            await _api.DeleteAsync(id); // Delete employee via API
             return RedirectToAction(nameof(Index));
         }
+
         //private readonly ApplicationDbContext _context;
         //private readonly EmployeeApiService _api;
 

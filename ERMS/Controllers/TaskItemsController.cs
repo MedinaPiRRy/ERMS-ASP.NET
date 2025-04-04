@@ -26,7 +26,7 @@ namespace ERMS.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var tasks = await _taskApi.GetAllAsync();
+            var tasks = await _taskApi.GetAllAsync(); // Fetch all tasks from the API
             return View(tasks);
         }
 
@@ -34,7 +34,7 @@ namespace ERMS.Controllers
         {
             if (id == null) return NotFound();
 
-            var task = await _taskApi.GetByIdAsync(id.Value);
+            var task = await _taskApi.GetByIdAsync(id.Value); // Fetch task by ID from the API
             if (task == null) return NotFound();
 
             return View(task);
@@ -42,8 +42,8 @@ namespace ERMS.Controllers
 
         public async Task<IActionResult> Create()
         {
-            ViewBag.EmployeeId = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName");
-            ViewBag.ProjectId = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name");
+            ViewBag.EmployeeId = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName"); // Makes sure all employees displayed
+            ViewBag.ProjectId = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name"); // Makes sure all projects displayed
             return View();
         }
 
@@ -53,12 +53,12 @@ namespace ERMS.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Employees = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName");
-                ViewBag.Projects = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name");
+                ViewBag.Employees = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName"); // Makes sure all employees displayed
+                ViewBag.Projects = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name"); // Makes sure all projects displayed
                 return View(task);
             }
 
-            await _taskApi.CreateAsync(task);
+            await _taskApi.CreateAsync(task); // Create task via API
             return RedirectToAction(nameof(Index));
         }
 
@@ -66,11 +66,11 @@ namespace ERMS.Controllers
         {
             if (id == null) return NotFound();
 
-            var task = await _taskApi.GetByIdAsync(id.Value);
+            var task = await _taskApi.GetByIdAsync(id.Value); // Fetch task by ID from the API
             if (task == null) return NotFound();
 
-            ViewBag.EmployeeId = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName", task.EmployeeId);
-            ViewBag.ProjectId = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name", task.ProjectId);
+            ViewBag.EmployeeId = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName", task.EmployeeId); // Makes sure all employees displayed
+            ViewBag.ProjectId = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name", task.ProjectId); // Makes sure all projects displayed
 
             return View(task);
         }
@@ -83,12 +83,12 @@ namespace ERMS.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Employees = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName", task.EmployeeId);
-                ViewBag.Projects = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name", task.ProjectId);
-                return View(task);
+                ViewBag.Employees = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName", task.EmployeeId); // Makes sure all employees displayed
+                ViewBag.Projects = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name", task.ProjectId); // Makes sure all projects displayed
+                return View(task); 
             }
 
-            await _taskApi.UpdateAsync(task);
+            await _taskApi.UpdateAsync(task); // Update task via API
             return RedirectToAction(nameof(Index));
         }
 
@@ -96,7 +96,7 @@ namespace ERMS.Controllers
         {
             if (id == null) return NotFound();
 
-            var task = await _taskApi.GetByIdAsync(id.Value);
+            var task = await _taskApi.GetByIdAsync(id.Value); // Fetch task by ID from the API
             if (task == null) return NotFound();
 
             return View(task);
@@ -106,7 +106,7 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _taskApi.DeleteAsync(id);
+            await _taskApi.DeleteAsync(id); // Delete task via API
             return RedirectToAction(nameof(Index));
         }
 

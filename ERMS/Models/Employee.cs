@@ -18,7 +18,8 @@ namespace ERMS.Models
         public int? ProjectId { get; set; } 
         public Project? Project { get; set; }
 
-        // For security purposes.
+        // For security purposes. 
+        // This is the ID of the user in the Identity system.
         public string? IdentityUserId { get; set; }
         public IdentityUser? IdentityUser { get; set; }
 

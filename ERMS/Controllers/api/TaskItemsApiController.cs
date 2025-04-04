@@ -22,7 +22,7 @@ namespace ERMS.Controllers.api
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
         {
-            return await _context.TaskItems
+            return await _context.TaskItems // Fetch all tasks with their associated project and assigned employee
             .Include(t => t.Project)
             .Include(t => t.AssignedEmployee)
             .ToListAsync();
@@ -32,7 +32,7 @@ namespace ERMS.Controllers.api
         [AllowAnonymous]
         public async Task<ActionResult<TaskItem>> GetTask(int id)
         {
-            var taskItem = await _context.TaskItems
+            var taskItem = await _context.TaskItems // Fetch task by ID with its associated project and assigned employee
             .Include(t => t.Project)
             .Include(t => t.AssignedEmployee)
             .FirstOrDefaultAsync(t => t.Id == id);
@@ -49,7 +49,7 @@ namespace ERMS.Controllers.api
         [AllowAnonymous]
         public async Task<ActionResult<TaskItem>> PostTask(TaskItem taskItem)
         {
-            _context.TaskItems.Add(taskItem);
+            _context.TaskItems.Add(taskItem); // Add new task
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetTask", new { id = taskItem.Id }, taskItem);
         }
@@ -63,7 +63,7 @@ namespace ERMS.Controllers.api
                 return BadRequest();
             }
 
-            _context.Entry(taskItem).State = EntityState.Modified;
+            _context.Entry(taskItem).State = EntityState.Modified; // Update task
 
             await _context.SaveChangesAsync();
 
@@ -74,12 +74,12 @@ namespace ERMS.Controllers.api
         [AllowAnonymous]
         public async Task<IActionResult> DeleteTask(int id)
         {
-            var taskItem = await _context.TaskItems.FindAsync(id);
+            var taskItem = await _context.TaskItems.FindAsync(id); // Fetch task by ID
             if (taskItem == null)
             {
                 return NotFound();
             }
-            _context.TaskItems.Remove(taskItem);
+            _context.TaskItems.Remove(taskItem); // Remove task
             await _context.SaveChangesAsync();
             return NoContent();
         }

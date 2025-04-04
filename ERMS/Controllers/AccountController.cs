@@ -5,10 +5,13 @@ using ERMS.Models;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 
+// This controller manages the Login and Register page making sure that users are saved to the database on Employees and IdentityUser tables
+
 namespace ERMS.Controllers
 {
     public class AccountController : Controller
     {
+        // Initializing the UserManager, RoleManager, ApplicationDbContext and SignInManager
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
@@ -28,6 +31,10 @@ namespace ERMS.Controllers
             return View(); 
         }
 
+        // This method handles the login process.
+        // It checks if the user exists and if the password is correct.
+        // If successful, it redirects to the home page.
+        // If not, it adds an error message to the ModelState and returns the login view.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string password)
@@ -55,6 +62,11 @@ namespace ERMS.Controllers
             return View(); 
         }
 
+        // This method handles the registration process.
+        // It checks if the model state is valid and if the role exists.
+        // If the user is created successfully, it adds the user to the role and saves the employee to the database.
+        // If not, it adds an error message to the ModelState and returns the registration view.
+        // It also assigns a default manager if none is provided. (Right now they cannot be provided at creation)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(Employee model, string password)
@@ -105,6 +117,7 @@ namespace ERMS.Controllers
             return View(model);
         }
 
+        // This method handles the logout process.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()

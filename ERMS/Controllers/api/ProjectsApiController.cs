@@ -22,6 +22,7 @@ namespace ERMS.Controllers.api
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
         {
+            // Fetch all projects with their assigned employees
             return await _context.Projects
             .Include(p => p.AssignedEmployees)
             .ToListAsync();
@@ -31,7 +32,7 @@ namespace ERMS.Controllers.api
         [AllowAnonymous]
         public async Task<ActionResult<Project>> GetProject(int id)
         {
-            var project = await _context.Projects
+            var project = await _context.Projects // Fetch project by ID
             .Include(p => p.AssignedEmployees)
             .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -49,16 +50,16 @@ namespace ERMS.Controllers.api
 
             if (project.AssignedEmployees != null && project.AssignedEmployees.Any())
             {
-                var attachedEmployees = await _context.Employees
+                var attachedEmployees = await _context.Employees // Fetch employees by IDs
                     .Where(e => project.AssignedEmployees.Select(a => a.Id).Contains(e.Id))
                     .ToListAsync();
 
-                project.AssignedEmployees = attachedEmployees;
+                project.AssignedEmployees = attachedEmployees; // Assign employees to the project
             }
 
-            _context.Projects.Add(project);
+            _context.Projects.Add(project); // Add new project
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetProject", new { id = project.Id }, project);
+            return CreatedAtAction("GetProject", new { id = project.Id }, project); // Return the created project
         }
 
         [HttpPut("{id}")]
@@ -70,7 +71,7 @@ namespace ERMS.Controllers.api
                 return BadRequest();
             }
 
-            var existingProject = await _context.Projects
+            var existingProject = await _context.Projects // Fetch existing project by ID
                 .Include(p => p.AssignedEmployees)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -79,21 +80,22 @@ namespace ERMS.Controllers.api
                 return NotFound();
             }
 
+            // Update project fields
             existingProject.Name = project.Name;
             existingProject.Description = project.Description;
             existingProject.StartDate = project.StartDate;
             existingProject.EndDate = project.EndDate;
             existingProject.Status = project.Status;
 
-            existingProject.AssignedEmployees.Clear();
+            existingProject.AssignedEmployees.Clear(); // Clear existing employees
 
             if (project.AssignedEmployees != null && project.AssignedEmployees.Any())
             {
-                var attachedEmployees = await _context.Employees
+                var attachedEmployees = await _context.Employees // Fetch employees by IDs
                     .Where(e => project.AssignedEmployees.Select(a => a.Id).Contains(e.Id))
                     .ToListAsync();
 
-                existingProject.AssignedEmployees = attachedEmployees;
+                existingProject.AssignedEmployees = attachedEmployees; // Assign new employees to the project
             }
 
             await _context.SaveChangesAsync();
@@ -107,7 +109,7 @@ namespace ERMS.Controllers.api
         {
             Console.WriteLine($"Attempting to delete project with ID {id}");
 
-            var project = await _context.Projects
+            var project = await _context.Projects // Fetch project by ID
             .Include(p => p.AssignedEmployees)
             .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -119,10 +121,10 @@ namespace ERMS.Controllers.api
 
             foreach (var emp in project.AssignedEmployees.ToList())
             {
-                emp.ProjectId = null; // assuming ProjectId is nullable
+                emp.ProjectId = null; 
             }
 
-            _context.Projects.Remove(project);
+            _context.Projects.Remove(project); // Remove project
             await _context.SaveChangesAsync();
             Console.WriteLine("Project deleted successfully");
 

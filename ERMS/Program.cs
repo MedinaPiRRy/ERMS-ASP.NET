@@ -42,12 +42,14 @@ namespace ERMS
                 client.BaseAddress = new Uri("http://localhost:5000/");
             });
 
+            // Add Identity services using IdentityUser and ApplicationDBContext
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
             builder.Services.AddRazorPages();
 
+            // Creates Roles
             async Task SeedRoles(IServiceProvider serviceProvider)
             {
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -65,6 +67,7 @@ namespace ERMS
 
             var app = builder.Build();
 
+            // Call the SeedRoles method to create roles
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -84,6 +87,7 @@ namespace ERMS
 
             app.UseRouting();
 
+            // Enable authentication and authorization
             app.UseAuthentication();
             app.UseAuthorization();
 

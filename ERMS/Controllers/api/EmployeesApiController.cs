@@ -24,14 +24,14 @@ namespace ERMS.Controllers.api
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-            return await _context.Employees.ToListAsync();
+            return await _context.Employees.ToListAsync(); // Fetch all employees
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.Employees.FindAsync(id); // Fetch employee by ID
             if (employee == null)
             {
                 return NotFound();
@@ -43,9 +43,9 @@ namespace ERMS.Controllers.api
         [AllowAnonymous]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
-            _context.Employees.Add(employee);
+            _context.Employees.Add(employee); // Add new employee
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee); // Return the created employee
         }
 
         [HttpPut("{id}")]
@@ -57,9 +57,10 @@ namespace ERMS.Controllers.api
                 return BadRequest();
             }
 
-            var existing = await _context.Employees.FindAsync(id);
+            var existing = await _context.Employees.FindAsync(id); // Fetch existing employee
             if (existing == null) return NotFound();
 
+            // Update the existing employee's fields
             existing.FullName = employee.FullName;
             existing.Email = employee.Email;
             existing.Role = employee.Role;
@@ -74,12 +75,12 @@ namespace ERMS.Controllers.api
         [AllowAnonymous]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _context.Employees.FindAsync(id); // Fetch employee by ID
             if (employee == null)
             {
                 return NotFound();
             }
-            _context.Employees.Remove(employee);
+            _context.Employees.Remove(employee); // Remove employee
             await _context.SaveChangesAsync();
             return NoContent();
         }
