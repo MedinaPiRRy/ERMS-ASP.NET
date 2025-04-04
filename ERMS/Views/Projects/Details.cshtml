@@ -35,6 +35,22 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.EndDate)
         </dd>
+        <dt class="col-sm-2">Assigned Employees</dt>
+        <dd class="col-sm-10">
+            @if (Model.AssignedEmployees != null && Model.AssignedEmployees.Any())
+            {
+                <ul>
+                    @foreach (var emp in Model.AssignedEmployees)
+                    {
+                        <li>@emp.FullName</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span class="text-muted">No employees assigned.</span>
+            }
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Status)
         </dt>

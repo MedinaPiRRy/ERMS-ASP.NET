@@ -3,24 +3,44 @@
   "WorkspaceRootPath": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\views\\projects\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:views\\projects\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\views\\projects\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:views\\projects\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\controllers\\projectscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:controllers\\projectscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\controllers\\employeescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:controllers\\employeescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\views\\projects\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:views\\projects\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\views\\projects\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:views\\projects\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\models\\project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:models\\project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\models\\project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:models\\project.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\data\\migrations\\20250401153029_capstoneproject1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -35,10 +55,6 @@
       "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:controllers\\taskitemscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\controllers\\employeescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:controllers\\employeescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -49,10 +65,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\models\\taskitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:models\\taskitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -62,24 +74,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Create.cshtml",
-              "RelativeDocumentMoniker": "Views\\Projects\\Create.cshtml",
-              "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Create.cshtml",
-              "RelativeToolTip": "Views\\Projects\\Create.cshtml",
-              "ViewState": "AgIAABoAAAAAAAAAAAAswDMAAAA8AAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Projects\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Index.cshtml*",
+              "RelativeToolTip": "Views\\Projects\\Index.cshtml*",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAADoAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-04T18:51:23.766Z",
+              "WhenOpened": "2025-04-04T19:56:38.566Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Edit.cshtml",
+              "RelativeDocumentMoniker": "Views\\Projects\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Edit.cshtml",
+              "RelativeToolTip": "Views\\Projects\\Edit.cshtml",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACcAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-04T19:48:34.997Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -92,7 +117,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Project.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Models\\Project.cs",
               "RelativeDocumentMoniker": "Models\\Project.cs",
@@ -105,7 +130,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "Employee.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Models\\Employee.cs",
               "RelativeDocumentMoniker": "Models\\Employee.cs",
@@ -118,7 +143,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "20250401153029_CapstoneProject1.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Data\\Migrations\\20250401153029_CapstoneProject1.cs",
               "RelativeDocumentMoniker": "Data\\Migrations\\20250401153029_CapstoneProject1.cs",
@@ -131,32 +156,46 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 3,
               "Title": "EmployeesController.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\EmployeesController.cs",
               "RelativeDocumentMoniker": "Controllers\\EmployeesController.cs",
               "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\EmployeesController.cs",
               "RelativeToolTip": "Controllers\\EmployeesController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwBcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T15:27:02.354Z"
+              "WhenOpened": "2025-04-01T15:27:02.354Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ProjectsController.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\ProjectsController.cs",
               "RelativeDocumentMoniker": "Controllers\\ProjectsController.cs",
               "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\ProjectsController.cs*",
               "RelativeToolTip": "Controllers\\ProjectsController.cs*",
-              "ViewState": "AgIAACkAAAAAAAAAAAAUwD0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAYwBsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-01T15:27:47.533Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Details.cshtml",
+              "RelativeDocumentMoniker": "Views\\Projects\\Details.cshtml",
+              "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Details.cshtml",
+              "RelativeToolTip": "Views\\Projects\\Details.cshtml",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAADQAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-04T19:48:34.32Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
@@ -169,7 +208,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 5,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\Projects\\Create.cshtml",
+              "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Views\\Projects\\Create.cshtml",
+              "RelativeToolTip": "Views\\Projects\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-04T18:51:23.766Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Models\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "Models\\ApplicationUser.cs",
+              "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Models\\ApplicationUser.cs",
+              "RelativeToolTip": "Models\\ApplicationUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-01T15:08:51.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "TaskItem.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Models\\TaskItem.cs",
               "RelativeDocumentMoniker": "Models\\TaskItem.cs",
@@ -181,7 +246,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "Data\\ApplicationDbContext.cs",
@@ -193,7 +258,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 12,
               "Title": "TaskItemsController.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\TaskItemsController.cs",
               "RelativeDocumentMoniker": "Controllers\\TaskItemsController.cs",
@@ -205,19 +270,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "ApplicationUser.cs",
-              "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Models\\ApplicationUser.cs",
-              "RelativeDocumentMoniker": "Models\\ApplicationUser.cs",
-              "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Models\\ApplicationUser.cs",
-              "RelativeToolTip": "Models\\ApplicationUser.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T15:08:51.753Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 14,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",

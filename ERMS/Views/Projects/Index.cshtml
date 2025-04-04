@@ -26,6 +26,9 @@
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>
             <th>
+                Assigned Employees
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th></th>
@@ -46,6 +49,17 @@
             <td>
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
+            <td>
+                @if (item.AssignedEmployees != null && item.AssignedEmployees.Any())
+                {
+                    @string.Join(", ", item.AssignedEmployees.Select(e => e.FullName))
+                }
+                else
+                {
+                    <span class="text-muted">None</span>
+                }
+                </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>

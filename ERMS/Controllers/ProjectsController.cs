@@ -22,19 +22,26 @@ namespace ERMS.Controllers
         // GET: Projects
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Projects.ToListAsync());
+            var projects = await _context.Projects
+            .Include(p => p.AssignedEmployees)
+            .ToListAsync();
+
+            return View(projects);
         }
 
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var project = await _context.Projects
-                .FirstOrDefaultAsync(m => m.Id == id);
+            .Include(p => p.AssignedEmployees)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
             if (project == null)
             {
                 return NotFound();
@@ -58,6 +65,14 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,Status")] Project project, int[] AssignedEmployeeIds)
         {
+            // Form was giving problems as it was not sending the AssignedEmployees list with the project, making the post requet fail.
+            // To fix this, we need to remove the AssignedEmployees from the ModelState so it doesn't throw an error.
+            // This is a workaround to allow the form to be submitted without the AssignedEmployees list.
+            // This is not the best practice, but it works for this case.
+            //
+            // References:
+            // https://stackoverflow.com/questions/6843171/is-it-correct-way-to-use-modelstate-remove-to-deal-with-modelstate
+            //
             ModelState.Remove("AssignedEmployees");
 
             Console.WriteLine("AssignedEmployeeIds: " + string.Join(", ", AssignedEmployeeIds));
@@ -83,11 +98,18 @@ namespace ERMS.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects.FindAsync(id);
+            var project = await _context.Projects
+            .Include(p => p.AssignedEmployees)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
             if (project == null)
             {
                 return NotFound();
             }
+
+            var selectedIds = project.AssignedEmployees.Select(e => e.Id).ToArray();
+            ViewBag.AllEmployees = new MultiSelectList(_context.Employees, "Id", "FullName", selectedIds);
+
             return View(project);
         }
 
@@ -96,8 +118,10 @@ namespace ERMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,Status")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,Status")] Project project, int[] AssignedEmployeeIds)
         {
+            ModelState.Remove("AssignedEmployees");
+
             if (id != project.Id)
             {
                 return NotFound();
@@ -107,7 +131,24 @@ namespace ERMS.Controllers
             {
                 try
                 {
-                    _context.Update(project);
+                    var existingProject = await _context.Projects
+                    .Include(p => p.AssignedEmployees)
+                    .FirstOrDefaultAsync(p => p.Id == id);
+
+                    if (existingProject == null) return NotFound();
+
+                    // Update fields
+                    existingProject.Name = project.Name;
+                    existingProject.Description = project.Description;
+                    existingProject.StartDate = project.StartDate;
+                    existingProject.EndDate = project.EndDate;
+                    existingProject.Status = project.Status;
+
+                    // Update assignedEmployees
+                    existingProject.AssignedEmployees.Clear();
+                    existingProject.AssignedEmployees = _context.Employees
+                        .Where(e => AssignedEmployeeIds.Contains(e.Id)).ToList();
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -123,6 +164,7 @@ namespace ERMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.AllEmployees = new MultiSelectList(_context.Employees, "Id", "FullName", AssignedEmployeeIds);
             return View(project);
         }
 
