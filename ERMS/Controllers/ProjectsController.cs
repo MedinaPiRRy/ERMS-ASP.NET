@@ -46,6 +46,8 @@ namespace ERMS.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
+            // To access all employees and add them to drop down menu
+            ViewBag.AllEmployees = new MultiSelectList(_context.Employees, "Id", "FullName");
             return View();
         }
 
@@ -54,14 +56,22 @@ namespace ERMS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,Status")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,Status")] Project project, int[] AssignedEmployeeIds)
         {
+            ModelState.Remove("AssignedEmployees");
+
+            Console.WriteLine("AssignedEmployeeIds: " + string.Join(", ", AssignedEmployeeIds));
             if (ModelState.IsValid)
             {
+                project.AssignedEmployees = _context.Employees.Where(e => AssignedEmployeeIds.Contains(e.Id))
+                    .ToList();
+
                 _context.Add(project);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            // To access all employees and add them to drop down menu
+            ViewBag.AllEmployees = new MultiSelectList(_context.Employees, "Id", "FullName");
             return View(project);
         }
 
