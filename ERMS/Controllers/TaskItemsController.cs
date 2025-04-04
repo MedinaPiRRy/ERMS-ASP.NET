@@ -38,6 +38,7 @@ namespace ERMS.Controllers
                 .Include(t => t.AssignedEmployee)
                 .Include(t => t.Project)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (taskItem == null)
             {
                 return NotFound();
@@ -49,7 +50,7 @@ namespace ERMS.Controllers
         // GET: TaskItems/Create
         public IActionResult Create()
         {
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Email");
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name");
             return View();
         }
@@ -61,13 +62,17 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,Priority,ProjectId,EmployeeId")] TaskItem taskItem)
         {
+            // Remove the properties that are not needed for model binding and are causing issues.
+            ModelState.Remove("Project");
+            ModelState.Remove("AssignedEmployee");
+
             if (ModelState.IsValid)
             {
                 _context.Add(taskItem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Email", taskItem.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", taskItem.EmployeeId);
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", taskItem.ProjectId);
             return View(taskItem);
         }
@@ -85,7 +90,7 @@ namespace ERMS.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Email", taskItem.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", taskItem.EmployeeId);
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", taskItem.ProjectId);
             return View(taskItem);
         }
@@ -122,7 +127,7 @@ namespace ERMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Email", taskItem.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", taskItem.EmployeeId);
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", taskItem.ProjectId);
             return View(taskItem);
         }
