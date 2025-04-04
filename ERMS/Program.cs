@@ -1,4 +1,5 @@
 using ERMS.Data;
+using ERMS.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +7,7 @@ namespace ERMS
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +17,36 @@ namespace ERMS
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddControllers().
+                AddJsonOptions(options => {
+                    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                });
+
+            // This makes sure that the Services are registered.
+            // This provides the base address for the HttpClient used in the services.
+            builder.Services.AddHttpClient<EmployeeApiService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5000/");
+            });
+            builder.Services.AddHttpClient<ProjectApiService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5000/");
+            });
+
+            builder.Services.AddHttpClient<TaskItemApiService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5000/");
+            });
+
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.AddRazorPages();
 
             async Task SeedRoles(IServiceProvider serviceProvider)
             {
@@ -35,7 +63,13 @@ namespace ERMS
                 }
             }
 
-                var app = builder.Build();
+            var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                await SeedRoles(services); 
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -50,6 +84,7 @@ namespace ERMS
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace ERMS.Models
 {
@@ -13,5 +14,13 @@ namespace ERMS.Models
         [Required]
         public string Role { get; set; }
         public string Manager { get; set; }
+
+        public int? ProjectId { get; set; } 
+        public Project? Project { get; set; }
+
+        // For security purposes.
+        public string? IdentityUserId { get; set; }
+        public IdentityUser? IdentityUser { get; set; }
+
     }
 }

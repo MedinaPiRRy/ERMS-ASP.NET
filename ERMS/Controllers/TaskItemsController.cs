@@ -7,169 +7,267 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ERMS.Data;
 using ERMS.Models;
+using ERMS.Services;
 
 namespace ERMS.Controllers
 {
     public class TaskItemsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly TaskItemApiService _taskApi;
+        private readonly EmployeeApiService _employeeApi;
+        private readonly ProjectApiService _projectApi;
 
-        public TaskItemsController(ApplicationDbContext context)
+        public TaskItemsController(TaskItemApiService taskApi, EmployeeApiService employeeApi, ProjectApiService projectApi)
         {
-            _context = context;
+            _taskApi = taskApi;
+            _employeeApi = employeeApi;
+            _projectApi = projectApi;
         }
 
-        // GET: TaskItems
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.TaskItems.Include(t => t.AssignedEmployee).Include(t => t.Project);
-            return View(await applicationDbContext.ToListAsync());
+            var tasks = await _taskApi.GetAllAsync();
+            return View(tasks);
         }
 
-        // GET: TaskItems/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var taskItem = await _context.TaskItems
-                .Include(t => t.AssignedEmployee)
-                .Include(t => t.Project)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var task = await _taskApi.GetByIdAsync(id.Value);
+            if (task == null) return NotFound();
 
-            if (taskItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(taskItem);
+            return View(task);
         }
 
-        // GET: TaskItems/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name");
+            ViewBag.EmployeeId = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName");
+            ViewBag.ProjectId = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name");
             return View();
         }
 
-        // POST: TaskItems/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,Priority,ProjectId,EmployeeId")] TaskItem taskItem)
+        public async Task<IActionResult> Create(TaskItem task)
         {
-            // Remove the properties that are not needed for model binding and are causing issues.
-            ModelState.Remove("Project");
-            ModelState.Remove("AssignedEmployee");
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(taskItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewBag.Employees = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName");
+                ViewBag.Projects = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name");
+                return View(task);
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", taskItem.EmployeeId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", taskItem.ProjectId);
-            return View(taskItem);
+
+            await _taskApi.CreateAsync(task);
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: TaskItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var taskItem = await _context.TaskItems.FindAsync(id);
-            if (taskItem == null)
-            {
-                return NotFound();
-            }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", taskItem.EmployeeId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", taskItem.ProjectId);
-            return View(taskItem);
+            var task = await _taskApi.GetByIdAsync(id.Value);
+            if (task == null) return NotFound();
+
+            ViewBag.EmployeeId = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName", task.EmployeeId);
+            ViewBag.ProjectId = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name", task.ProjectId);
+
+            return View(task);
         }
 
-        // POST: TaskItems/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,Priority,ProjectId,EmployeeId")] TaskItem taskItem)
+        public async Task<IActionResult> Edit(int id, TaskItem task)
         {
-            if (id != taskItem.Id)
+            if (id != task.Id) return NotFound();
+
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                ViewBag.Employees = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName", task.EmployeeId);
+                ViewBag.Projects = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name", task.ProjectId);
+                return View(task);
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(taskItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TaskItemExists(taskItem.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", taskItem.EmployeeId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", taskItem.ProjectId);
-            return View(taskItem);
+            await _taskApi.UpdateAsync(task);
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: TaskItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var taskItem = await _context.TaskItems
-                .Include(t => t.AssignedEmployee)
-                .Include(t => t.Project)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (taskItem == null)
-            {
-                return NotFound();
-            }
+            var task = await _taskApi.GetByIdAsync(id.Value);
+            if (task == null) return NotFound();
 
-            return View(taskItem);
+            return View(task);
         }
 
-        // POST: TaskItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var taskItem = await _context.TaskItems.FindAsync(id);
-            if (taskItem != null)
-            {
-                _context.TaskItems.Remove(taskItem);
-            }
-
-            await _context.SaveChangesAsync();
+            await _taskApi.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TaskItemExists(int id)
-        {
-            return _context.TaskItems.Any(e => e.Id == id);
-        }
+        //private readonly ApplicationDbContext _context;
+
+        //public TaskItemsController(ApplicationDbContext context)
+        //{
+        //    _context = context;
+        //}
+
+        //// GET: TaskItems
+        //public async Task<IActionResult> Index()
+        //{
+        //    var applicationDbContext = _context.TaskItems.Include(t => t.AssignedEmployee).Include(t => t.Project);
+        //    return View(await applicationDbContext.ToListAsync());
+        //}
+
+        //// GET: TaskItems/Details/5
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var taskItem = await _context.TaskItems
+        //        .Include(t => t.AssignedEmployee)
+        //        .Include(t => t.Project)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+
+        //    if (taskItem == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(taskItem);
+        //}
+
+        //// GET: TaskItems/Create
+        //public IActionResult Create()
+        //{
+        //    ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+        //    ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name");
+        //    return View();
+        //}
+
+        //// POST: TaskItems/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,Priority,ProjectId,EmployeeId")] TaskItem taskItem)
+        //{
+        //    // Remove the properties that are not needed for model binding and are causing issues.
+        //    ModelState.Remove("Project");
+        //    ModelState.Remove("AssignedEmployee");
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(taskItem);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", taskItem.EmployeeId);
+        //    ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", taskItem.ProjectId);
+        //    return View(taskItem);
+        //}
+
+        //// GET: TaskItems/Edit/5
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var taskItem = await _context.TaskItems.FindAsync(id);
+        //    if (taskItem == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", taskItem.EmployeeId);
+        //    ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", taskItem.ProjectId);
+        //    return View(taskItem);
+        //}
+
+        //// POST: TaskItems/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,Priority,ProjectId,EmployeeId")] TaskItem taskItem)
+        //{
+        //    if (id != taskItem.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(taskItem);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!TaskItemExists(taskItem.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", taskItem.EmployeeId);
+        //    ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", taskItem.ProjectId);
+        //    return View(taskItem);
+        //}
+
+        //// GET: TaskItems/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var taskItem = await _context.TaskItems
+        //        .Include(t => t.AssignedEmployee)
+        //        .Include(t => t.Project)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (taskItem == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(taskItem);
+        //}
+
+        //// POST: TaskItems/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var taskItem = await _context.TaskItems.FindAsync(id);
+        //    if (taskItem != null)
+        //    {
+        //        _context.TaskItems.Remove(taskItem);
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
+
+        //private bool TaskItemExists(int id)
+        //{
+        //    return _context.TaskItems.Any(e => e.Id == id);
+        //}
     }
 }
