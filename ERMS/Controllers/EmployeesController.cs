@@ -14,10 +14,12 @@ namespace ERMS.Controllers
     public class EmployeesController : Controller
     {
         private readonly EmployeeApiService _api;
+        private readonly ApplicationDbContext _context;
 
-        public EmployeesController(EmployeeApiService api)
+        public EmployeesController(EmployeeApiService api, ApplicationDbContext context)
         {
             _api = api;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
@@ -36,8 +38,9 @@ namespace ERMS.Controllers
             return View(employee);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await LoadEmployeeDropdowns(); // Load dropdowns for managers and roles
             return View();
         }
 
@@ -45,7 +48,15 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Employee employee)
         {
-            if (!ModelState.IsValid) return View(employee);
+            if (!ModelState.IsValid) { 
+                await LoadEmployeeDropdowns(employee.Manager, employee.Role);
+                return View(employee);
+            }
+
+            if (string.IsNullOrEmpty(employee.Manager))
+            {
+                employee.Manager = "Unassigned"; // Set manager to Unassigned if manager was not sellected
+            }
 
             var success = await _api.CreateAsync(employee); // Create employee via API
             if (!success) ModelState.AddModelError("", "Error creating employee.");
@@ -60,6 +71,7 @@ namespace ERMS.Controllers
             var employee = await _api.GetByIdAsync(id.Value); // Fetch employee by ID from the API
             if (employee == null) return NotFound();
 
+            await LoadEmployeeDropdowns(employee.Manager, employee.Role);
             return View(employee);
         }
 
@@ -68,7 +80,15 @@ namespace ERMS.Controllers
         public async Task<IActionResult> Edit(int id, Employee employee)
         {
             if (id != employee.Id) return NotFound();
-            if (!ModelState.IsValid) return View(employee);
+            if (!ModelState.IsValid) { 
+                await LoadEmployeeDropdowns(employee.Manager, employee.Role);
+                return View(employee);
+            }
+
+            if (string.IsNullOrEmpty(employee.Manager))
+            {
+                employee.Manager = "Unassigned"; // Set manager to Unassigned if manager was not sellected
+            }
 
             var success = await _api.UpdateAsync(employee); // Update employee via API
             if (!success) ModelState.AddModelError("", "Error updating employee.");
@@ -93,6 +113,23 @@ namespace ERMS.Controllers
             await _api.DeleteAsync(id); // Delete employee via API
             return RedirectToAction(nameof(Index));
         }
+
+        // This method is used to load the dropdowns for managers and roles.
+        // Managers will come from all Employees with the role of "Manager".
+        // Roles are hardcoded for simplicity, however, they follow the SeededRoles in Program.cs.
+        private async Task LoadEmployeeDropdowns(string selectedManager = null, string selectedRole = null)
+        {
+            var managers = await _context.Employees
+                .Where(e => e.Role == "Manager")
+                .Select(e => e.FullName)
+                .ToListAsync();
+
+            managers.Insert(0, "Unassigned");
+
+            ViewBag.Managers = new SelectList(managers, selectedManager);
+            ViewBag.Roles = new SelectList(new[] { "Employee", "Manager", "Admin" }, selectedRole);
+        }
+
 
         //private readonly ApplicationDbContext _context;
         //private readonly EmployeeApiService _api;
