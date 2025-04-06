@@ -42,6 +42,22 @@ namespace ERMS
                 client.BaseAddress = new Uri("http://localhost:5000/");
             });
 
+            // Register the services for dependency injection
+            builder.Services.AddHttpClient<IEmployeeApiService, EmployeeApiService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5000/"); 
+            });
+            builder.Services.AddHttpClient<IProjectApiService, ProjectApiService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5000/"); 
+            });
+
+            builder.Services.AddHttpClient<ITaskItemApiService, TaskItemApiService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5000/"); 
+            });
+
+
             // Add Identity services using IdentityUser and ApplicationDBContext
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -94,6 +110,8 @@ namespace ERMS
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllers();
             app.MapRazorPages();
 
             app.Run();

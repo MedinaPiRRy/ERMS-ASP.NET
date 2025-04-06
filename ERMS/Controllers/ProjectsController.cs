@@ -52,6 +52,11 @@ namespace ERMS.Controllers
         {
             ModelState.Remove("AssignedEmployees"); // Remove the AssignedEmployees from ModelState to avoid validation errors
 
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                return Forbid(); // Prevent unauthorized access
+            }
+
             project.AssignedEmployees = (await _employeeApi.GetAllAsync()) // Fetch all employees from the API
                 .Where(e => AssignedEmployeeIds.Contains(e.Id))
                 .ToList();
@@ -88,6 +93,11 @@ namespace ERMS.Controllers
         public async Task<IActionResult> Edit(int id, Project project, int[] AssignedEmployeeIds)
         {
             ModelState.Remove("AssignedEmployees"); // Remove the AssignedEmployees from ModelState to avoid validation errors
+
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                return Forbid(); // Prevent unauthorized access
+            }
 
             if (id != project.Id) return NotFound();
 
@@ -126,6 +136,11 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                return Forbid(); // Prevent unauthorized access
+            }
+
             var success = await _api.DeleteAsync(id);   // Delete project via API
 
             if (!success)

@@ -29,13 +29,15 @@ namespace ERMS.Services
 
         public async Task<bool> UpdateAsync(Employee employee)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/EmployeesApi/{employee.Id}", employee);
+            var url = $"api/EmployeesApi/{employee.Id}";
+            Console.WriteLine($"PUT to: {url}");
+            var response = await _httpClient.PutAsJsonAsync(url, employee);
 
             // For debugging as PUT is giving the most issues
             if (!response.IsSuccessStatusCode)
             {
                 var body = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("API PUT Error: " + body);
+                Console.WriteLine($"API PUT Error ({response.StatusCode}): " + body);
             }
             return response.IsSuccessStatusCode;
         }

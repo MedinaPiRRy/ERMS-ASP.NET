@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ERMS.Data;
 using ERMS.Models;
 using ERMS.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace ERMS.Controllers
 {
@@ -53,6 +54,11 @@ namespace ERMS.Controllers
                 return View(employee);
             }
 
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                return Forbid(); // Prevent unauthorized access
+            }
+
             if (string.IsNullOrEmpty(employee.Manager))
             {
                 employee.Manager = "Unassigned"; // Set manager to Unassigned if manager was not sellected
@@ -79,7 +85,23 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Employee employee)
         {
+            //Console.WriteLine($"Authenticated: {User.Identity.IsAuthenticated}");
+            //Console.WriteLine($"User: {User.Identity.Name}");
+
+
+            //foreach (var claim in User.Claims)
+            //{
+            //    Console.WriteLine($"CLAIM: {claim.Type} => {claim.Value}");
+            //}
+
+
             if (id != employee.Id) return NotFound();
+            // Check if the user is in the Manager role
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                return Forbid(); // Prevent unauthorized access
+            }
+
             if (!ModelState.IsValid) { 
                 await LoadEmployeeDropdowns(employee.Manager, employee.Role);
                 return View(employee);
@@ -110,6 +132,11 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                return Forbid(); // Prevent unauthorized access
+            }
+
             await _api.DeleteAsync(id); // Delete employee via API
             return RedirectToAction(nameof(Index));
         }

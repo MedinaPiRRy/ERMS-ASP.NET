@@ -39,7 +39,16 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string password)
         {
+            Console.WriteLine($"Login POST triggered: {email}");
+
             var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return View();
+            }
+
             if (user != null)
             {
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, 
@@ -49,6 +58,12 @@ namespace ERMS.Controllers
                     TempData["SuccessMessage"] = "You’ve logged in successfully!";
 
                     return RedirectToAction("Index", "Home");
+                }
+
+                if (!result.Succeeded)
+                {
+                    TempData["Error"] = "Incorrect password.";
+                    return View();
                 }
             }
 

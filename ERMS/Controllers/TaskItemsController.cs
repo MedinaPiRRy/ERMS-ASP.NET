@@ -58,6 +58,11 @@ namespace ERMS.Controllers
                 return View(task);
             }
 
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                return Forbid(); // Prevent unauthorized access
+            }
+
             await _taskApi.CreateAsync(task); // Create task via API
             return RedirectToAction(nameof(Index));
         }
@@ -80,6 +85,11 @@ namespace ERMS.Controllers
         public async Task<IActionResult> Edit(int id, TaskItem task)
         {
             if (id != task.Id) return NotFound();
+
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                return Forbid(); // Prevent unauthorized access
+            }
 
             if (!ModelState.IsValid)
             {
@@ -106,6 +116,11 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                return Forbid(); // Prevent unauthorized access
+            }
+
             await _taskApi.DeleteAsync(id); // Delete task via API
             return RedirectToAction(nameof(Index));
         }
