@@ -3,7 +3,7 @@ using ERMS.Models;
 
 namespace ERMS.Services
 {
-    public class ProjectApiService
+    public class ProjectApiService : IProjectApiService
     {
         private readonly HttpClient _httpClient;
 

@@ -13,11 +13,11 @@ namespace ERMS.Controllers
 {
     public class TaskItemsController : Controller
     {
-        private readonly TaskItemApiService _taskApi;
-        private readonly EmployeeApiService _employeeApi;
-        private readonly ProjectApiService _projectApi;
+        private readonly ITaskItemApiService _taskApi;
+        private readonly IEmployeeApiService _employeeApi;
+        private readonly IProjectApiService _projectApi;
 
-        public TaskItemsController(TaskItemApiService taskApi, EmployeeApiService employeeApi, ProjectApiService projectApi)
+        public TaskItemsController(ITaskItemApiService taskApi, IEmployeeApiService employeeApi, IProjectApiService projectApi)
         {
             _taskApi = taskApi;
             _employeeApi = employeeApi;

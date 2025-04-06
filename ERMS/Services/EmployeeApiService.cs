@@ -2,7 +2,7 @@
 
 namespace ERMS.Services
 {
-    public class EmployeeApiService
+    public class EmployeeApiService : IEmployeeApiService
     {
         private readonly HttpClient _httpClient;
 

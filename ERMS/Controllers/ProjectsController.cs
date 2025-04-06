@@ -13,10 +13,10 @@ namespace ERMS.Controllers
 {
     public class ProjectsController : Controller
     {
-        private readonly ProjectApiService _api;
-        private readonly EmployeeApiService _employeeApi;
+        private readonly IProjectApiService _api;
+        private readonly IEmployeeApiService _employeeApi;
 
-        public ProjectsController(ProjectApiService api, EmployeeApiService employeeApi)
+        public ProjectsController(IProjectApiService api, IEmployeeApiService employeeApi)
         {
             _api = api;
             _employeeApi = employeeApi;

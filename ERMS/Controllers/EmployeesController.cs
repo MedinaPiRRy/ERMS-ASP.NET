@@ -13,10 +13,10 @@ namespace ERMS.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly EmployeeApiService _api;
+        private readonly IEmployeeApiService _api;
         private readonly ApplicationDbContext _context;
 
-        public EmployeesController(EmployeeApiService api, ApplicationDbContext context)
+        public EmployeesController(IEmployeeApiService api, ApplicationDbContext context)
         {
             _api = api;
             _context = context;

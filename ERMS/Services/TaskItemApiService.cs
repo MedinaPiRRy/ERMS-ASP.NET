@@ -3,7 +3,7 @@ using ERMS.Models;
 
 namespace ERMS.Services
 {
-    public class TaskItemApiService
+    public class TaskItemApiService : ITaskItemApiService
     {
         private readonly HttpClient _httpClient;
 
