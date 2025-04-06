@@ -1,0 +1,19 @@
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>opencover</Format>
+          <Exclude>
+            [ERMS.Data.Migrations*]*
+            [ERMS.Views*]*
+            [ERMS.Program]*
+            [ERMS.Models.ApplicationUser]*
+            [ERMS.Models.ErrorViewModel]*
+            [ERMS.Services.*]*       <!-- Added since we are not testing for Services -->
+          </Exclude>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
