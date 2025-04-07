@@ -50,26 +50,30 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Project project, int[] AssignedEmployeeIds)
         {
-            ModelState.Remove("AssignedEmployees"); // Remove the AssignedEmployees from ModelState to avoid validation errors
+            ModelState.Remove("AssignedEmployees");
 
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            var allEmployees = await _employeeApi.GetAllAsync(); 
+
+            if (!ModelState.IsValid)
             {
-                return Forbid(); // Prevent unauthorized access
+                ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", AssignedEmployeeIds);
+                return View(project);
             }
 
-            project.AssignedEmployees = (await _employeeApi.GetAllAsync()) // Fetch all employees from the API
+            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+                return Forbid();
+
+            project.AssignedEmployees = allEmployees
                 .Where(e => AssignedEmployeeIds.Contains(e.Id))
                 .ToList();
 
-            if (!ModelState.IsValid) {
-                var allEmployees = await _employeeApi.GetAllAsync(); // Fetch all employees from the API
-                ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", AssignedEmployeeIds); // Makes sure employees are displayed
-
+            var success = await _api.CreateAsync(project);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Error creating project.");
+                ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", AssignedEmployeeIds);
                 return View(project);
-            };
-
-            var success = await _api.CreateAsync(project); // Create project via API
-            if (!success) ModelState.AddModelError("", "Error creating project.");
+            }
 
             return RedirectToAction(nameof(Index));
         }

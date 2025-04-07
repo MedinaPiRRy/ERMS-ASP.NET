@@ -84,21 +84,23 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, TaskItem task)
         {
-            if (id != task.Id) return NotFound();
+            if (id != task.Id)
+                return NotFound();
 
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
-            {
-                return Forbid(); // Prevent unauthorized access
-            }
+            if (!(User.IsInRole("Manager") || User.IsInRole("Admin")))
+                return Forbid();
+
+            var allEmployees = await _employeeApi.GetAllAsync();
+            var allProjects = await _projectApi.GetAllAsync();
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Employees = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName", task.EmployeeId); // Makes sure all employees displayed
-                ViewBag.Projects = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name", task.ProjectId); // Makes sure all projects displayed
-                return View(task); 
+                ViewBag.Employees = new SelectList(allEmployees, "Id", "FullName", task.EmployeeId);
+                ViewBag.Projects = new SelectList(allProjects, "Id", "Name", task.ProjectId);
+                return View(task);
             }
 
-            await _taskApi.UpdateAsync(task); // Update task via API
+            await _taskApi.UpdateAsync(task);
             return RedirectToAction(nameof(Index));
         }
 

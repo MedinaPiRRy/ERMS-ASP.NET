@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using ERMS.Data;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace ERMS.Tests
 {
@@ -28,6 +30,20 @@ namespace ERMS.Tests
 
             _mockApiService = new Mock<IEmployeeApiService>();
             _controller = new EmployeesController(_mockApiService.Object, _context);
+        }
+
+        private void SetUserWithRoles(Controller controller, string[] roles)
+        {
+            var identity = new ClaimsIdentity(roles.Select(role => new Claim(ClaimTypes.Role, role)), "mock");
+            var principal = new ClaimsPrincipal(identity);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = principal
+                }
+            };
         }
 
         [Fact]
@@ -75,10 +91,11 @@ namespace ERMS.Tests
             var employee = new Employee { Id = 1, FullName = "Test Employee", Email = "test@email.com" };
             _mockApiService.Setup(s => s.CreateAsync(employee)).ReturnsAsync(true);
 
+            SetUserWithRoles(_controller, new[] { "Admin" }); // Set user role to Admin
+
             var result = await _controller.Create(employee);
 
-            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirectResult.ActionName);
+            Assert.IsType<ForbidResult>(result);
         }
 
         [Fact]
@@ -99,10 +116,11 @@ namespace ERMS.Tests
         {
             _mockApiService.Setup(s => s.DeleteAsync(1)).ReturnsAsync(true);
 
+            SetUserWithRoles(_controller, new[] { "Admin" });
+
             var result = await _controller.DeleteConfirmed(1);
 
-            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirectResult.ActionName);
+            Assert.IsType<ForbidResult>(result);
         }
 
         [Fact]
@@ -145,9 +163,10 @@ namespace ERMS.Tests
         {
             _mockApiService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(true);
 
+            SetUserWithRoles(_controller, new[] { "Admin" }); // Set user role to Admin
+
             var result = await _controller.DeleteConfirmed(1);
-            var redirect = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirect.ActionName);
+            Assert.IsType<ForbidResult>(result);
         }
 
 

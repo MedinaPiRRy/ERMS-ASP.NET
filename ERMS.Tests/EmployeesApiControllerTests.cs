@@ -6,17 +6,51 @@ using ERMS.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using ERMS.Controllers;
+using ERMS.Services;
+using Microsoft.Extensions.Options;
+using Moq;
+using Microsoft.AspNetCore.Identity;
 
 namespace ERMS.Tests
 {
     public class EmployeesApiControllerTests
     {
+        private readonly Mock<IEmployeeApiService> _mockApiService;
+        private readonly EmployeesController _controller;
+        private readonly ApplicationDbContext _context;
+
+        public EmployeesApiControllerTests()
+        {
+            _context = GetContext("TestDB2");
+
+            _mockApiService = new Mock<IEmployeeApiService>();
+            _controller = new EmployeesController(_mockApiService.Object, _context);
+        }
+
         private ApplicationDbContext GetContext(string dbName)
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
             return new ApplicationDbContext(options);
+        }
+
+        // This method sets up the user roles for the controller context.
+        private void SetUserWithRoles(Controller controller, string[] roles)
+        {
+            var identity = new ClaimsIdentity(roles.Select(role => new Claim(ClaimTypes.Role, role)), "mock");
+            var principal = new ClaimsPrincipal(identity);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = principal
+                }
+            };
         }
 
         [Fact]
@@ -80,19 +114,52 @@ namespace ERMS.Tests
         [Fact]
         public async Task PostEmployee_AddsEmployee()
         {
+            // Use ApplicationDbContext to create a new in-memory database for testing
             var context = GetContext(nameof(PostEmployee_AddsEmployee));
             var controller = new EmployeesApiController(context);
 
-            var emp = new Employee {
+            // Create mock services 
+            var userManagerMock = new Mock<UserManager<IdentityUser>>(
+                Mock.Of<IUserStore<IdentityUser>>(), null, null, null, null, null, null, null, null
+            );
+            var roleManagerMock = new Mock<RoleManager<IdentityRole>>(
+                Mock.Of<IRoleStore<IdentityRole>>(), null, null, null, null
+            );
+
+            // Set up the mock UserManager and RoleManager
+            userManagerMock.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((IdentityUser)null!);
+            userManagerMock.Setup(m => m.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            userManagerMock.Setup(m => m.AddToRoleAsync(It.IsAny<IdentityUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+
+            roleManagerMock.Setup(m => m.RoleExistsAsync(It.IsAny<string>())).ReturnsAsync(true); // Assuming the role exists
+
+            // Set up the service provider to return the mocked UserManager and RoleManager
+            var serviceProvider = new Mock<IServiceProvider>();
+            serviceProvider.Setup(x => x.GetService(typeof(UserManager<IdentityUser>))).Returns(userManagerMock.Object);
+            serviceProvider.Setup(x => x.GetService(typeof(RoleManager<IdentityRole>))).Returns(roleManagerMock.Object);
+
+            // Set the controller context with the mocked services
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { RequestServices = serviceProvider.Object }
+            };
+
+            // Arrange
+            var emp = new Employee
+            {
                 Id = 1,
                 FullName = "John Doe",
                 Email = "john@example.com",
                 Role = "Admin",
                 Manager = "Manager A"
             };
+
+            // Act
             var result = await controller.PostEmployee(emp);
 
-            Assert.IsType<CreatedAtActionResult>(result.Result);
+            // Assert
+            var created = Assert.IsType<CreatedAtActionResult>(result.Result);
+            Assert.Equal(emp, created.Value);
         }
 
         [Fact]

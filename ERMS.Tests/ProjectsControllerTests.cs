@@ -6,6 +6,8 @@ using ERMS.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace ERMS.Tests
 {
@@ -20,6 +22,21 @@ namespace ERMS.Tests
             _projectMock = new Mock<IProjectApiService>();
             _employeeMock = new Mock<IEmployeeApiService>();
             _controller = new ProjectsController(_projectMock.Object, _employeeMock.Object);
+        }
+
+        // Set up in-memory database for testing (User Roles)
+        private void SetUserWithRoles(Controller controller, string[] roles)
+        {
+            var identity = new ClaimsIdentity(roles.Select(role => new Claim(ClaimTypes.Role, role)), "mock");
+            var principal = new ClaimsPrincipal(identity);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = principal
+                }
+            };
         }
 
         [Fact]
@@ -74,21 +91,16 @@ namespace ERMS.Tests
         [Fact]
         public async Task Create_Post_InvalidModel_ReturnsView()
         {
-            var fakeProject = new Project { Id = 1, Name = "Invalid Project" };
-            var assignedEmployeeIds = new int[] { 1, 2 };
+            _employeeMock.Setup(e => e.GetAllAsync()).ReturnsAsync(new List<Employee>());
 
             _controller.ModelState.AddModelError("Name", "Required");
+            SetUserWithRoles(_controller, new[] { "Manager" });
 
-            _employeeMock.Setup(s => s.GetAllAsync()).ReturnsAsync(new List<Employee>
-            {
-                new Employee { Id = 1, FullName = "John" },
-                new Employee { Id = 2, FullName = "Jane" }
-            });
-
-            var result = await _controller.Create(fakeProject, assignedEmployeeIds);
+            var project = new Project { Id = 1, Name = null };
+            var result = await _controller.Create(project, new int[] { });
 
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal(fakeProject, viewResult.Model);
+            Assert.Equal(project, viewResult.Model);
         }
 
         [Fact]
@@ -96,6 +108,8 @@ namespace ERMS.Tests
         {
             _employeeMock.Setup(e => e.GetAllAsync()).ReturnsAsync(new List<Employee>());
             _projectMock.Setup(p => p.CreateAsync(It.IsAny<Project>())).ReturnsAsync(true);
+
+            SetUserWithRoles(_controller, new[] { "Manager" }); // Set user role to Manager
 
             var result = await _controller.Create(new Project(), new int[0]);
 
@@ -125,6 +139,8 @@ namespace ERMS.Tests
         {
             _projectMock.Setup(p => p.DeleteAsync(1)).ReturnsAsync(true);
 
+            SetUserWithRoles(_controller, new[] { "Manager" }); // Set user role to Manager
+
             var result = await _controller.DeleteConfirmed(1);
 
             var redirect = Assert.IsType<RedirectToActionResult>(result);
@@ -136,6 +152,8 @@ namespace ERMS.Tests
         {
             _projectMock.Setup(p => p.DeleteAsync(1)).ReturnsAsync(false);
             _projectMock.Setup(p => p.GetByIdAsync(1)).ReturnsAsync(new Project { Id = 1 });
+
+            SetUserWithRoles(_controller, new[] { "Manager" }); // Set user role to Manager
 
             var result = await _controller.DeleteConfirmed(1);
 
