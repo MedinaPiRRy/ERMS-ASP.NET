@@ -16,32 +16,47 @@ namespace ERMS.Controllers
     {
         private readonly IEmployeeApiService _api;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<EmployeesController> _logger;
 
-        public EmployeesController(IEmployeeApiService api, ApplicationDbContext context)
+        public EmployeesController(IEmployeeApiService api, ApplicationDbContext context, ILogger<EmployeesController> logger)
         {
             _api = api;
             _context = context;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
             var employees = await _api.GetAllAsync(); // Fetch all employees from the API
+
+            _logger.LogInformation("User accessed index page for Employees");
             return View(employees);
         }
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                _logger.LogError("User attempted to access Details page for Employees with null ID");
+                return NotFound();
+            }
 
             var employee = await _api.GetByIdAsync(id.Value); // Fetch employee by ID from the API
-            if (employee == null) return NotFound();
+            if (employee == null) 
+            {
+                _logger.LogError("User attempted to access Details page for Employees with invalid ID: {Id}", id);
+                return NotFound();
+            }
 
+            _logger.LogInformation("User accessed Details page for Employees");
             return View(employee);
         }
 
         public async Task<IActionResult> Create()
         {
             await LoadEmployeeDropdowns(); // Load dropdowns for managers and roles
+
+            _logger.LogInformation("User accessed Create page for Employees");
             return View();
         }
 
@@ -51,11 +66,13 @@ namespace ERMS.Controllers
         {
             if (!ModelState.IsValid) { 
                 await LoadEmployeeDropdowns(employee.Manager, employee.Role);
+                _logger.LogInformation("User accessed Create page for Employees with invalid model state");
                 return View(employee);
             }
 
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
+                _logger.LogError("User attempted to create an employee without proper authorization");
                 return Forbid(); // Prevent unauthorized access
             }
 
@@ -65,17 +82,31 @@ namespace ERMS.Controllers
             }
 
             var success = await _api.CreateAsync(employee); // Create employee via API
-            if (!success) ModelState.AddModelError("", "Error creating employee.");
+            if (!success) 
+            {
+                ModelState.AddModelError("", "Error creating employee.");
+                _logger.LogError("Error creating employee: {Employee}", employee);
+                return View();
+            };
 
+            _logger.LogInformation("User created a new employee: {Employee}", employee);
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) 
+            {
+                _logger.LogError("User attempted to edit an employee with null ID");
+                return NotFound();
+            };
 
             var employee = await _api.GetByIdAsync(id.Value); // Fetch employee by ID from the API
-            if (employee == null) return NotFound();
+            if (employee == null) 
+            {
+                _logger.LogError("User attempted to edit an employee that does not exist: {Id}", id);
+                return NotFound();
+            };
 
             await LoadEmployeeDropdowns(employee.Manager, employee.Role);
             return View(employee);
@@ -85,24 +116,20 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Employee employee)
         {
-            //Console.WriteLine($"Authenticated: {User.Identity.IsAuthenticated}");
-            //Console.WriteLine($"User: {User.Identity.Name}");
-
-
-            //foreach (var claim in User.Claims)
-            //{
-            //    Console.WriteLine($"CLAIM: {claim.Type} => {claim.Value}");
-            //}
-
-
-            if (id != employee.Id) return NotFound();
+            if (id != employee.Id) 
+            {
+                _logger.LogError("User attempted to edit an employee with mismatched ID: {Id}", id);
+                return NotFound();
+            }
             // Check if the user is in the Manager role
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
+                _logger.LogError("User attempted to edit an employee without proper authorization");
                 return Forbid(); // Prevent unauthorized access
             }
 
-            if (!ModelState.IsValid) { 
+            if (!ModelState.IsValid) {
+                _logger.LogInformation("User accessed Edit page for Employees with invalid model state");
                 await LoadEmployeeDropdowns(employee.Manager, employee.Role);
                 return View(employee);
             }
@@ -113,18 +140,32 @@ namespace ERMS.Controllers
             }
 
             var success = await _api.UpdateAsync(employee); // Update employee via API
-            if (!success) ModelState.AddModelError("", "Error updating employee.");
+            if (!success) 
+            {
+                _logger.LogError("Error updating employee: {Employee}", employee);
+                ModelState.AddModelError("", "Error updating employee.");
+            }
 
+            _logger.LogInformation($"User created employee successfully");
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) 
+            {
+                _logger.LogError("User attempted to delete an employee with null ID");
+                return NotFound();
+            }
 
             var employee = await _api.GetByIdAsync(id.Value); // Fetch employee by ID from the API
-            if (employee == null) return NotFound();
+            if (employee == null) 
+            {
+                _logger.LogError("User attempted to delete an employee that does not exist: {Id}", id);
+                return NotFound();
+            }
 
+            _logger.LogInformation("User accessed Delete page for Employees");
             return View(employee);
         }
 
@@ -134,6 +175,7 @@ namespace ERMS.Controllers
         {
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
+                _logger.LogError("User attempted to delete an employee without proper authorization");
                 return Forbid(); // Prevent unauthorized access
             }
 

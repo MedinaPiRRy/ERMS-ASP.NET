@@ -16,32 +16,45 @@ namespace ERMS.Controllers
         private readonly ITaskItemApiService _taskApi;
         private readonly IEmployeeApiService _employeeApi;
         private readonly IProjectApiService _projectApi;
+        private readonly ILogger<TaskItemsController> _logger;
 
-        public TaskItemsController(ITaskItemApiService taskApi, IEmployeeApiService employeeApi, IProjectApiService projectApi)
+        public TaskItemsController(ITaskItemApiService taskApi, IEmployeeApiService employeeApi, IProjectApiService projectApi, ILogger<TaskItemsController> logger)
         {
             _taskApi = taskApi;
             _employeeApi = employeeApi;
             _projectApi = projectApi;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
+            _logger.LogInformation("User accessed the Task Items Index page");
             var tasks = await _taskApi.GetAllAsync(); // Fetch all tasks from the API
             return View(tasks);
         }
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                _logger.LogWarning("Task ID is null in Details method");
+                return NotFound();
+            }
 
             var task = await _taskApi.GetByIdAsync(id.Value); // Fetch task by ID from the API
-            if (task == null) return NotFound();
+            if (task == null)
+            {
+                _logger.LogWarning($"Task with ID {id} not found in Details method");
+                return NotFound();
+            }
 
+            _logger.LogInformation($"User accessed details for Task ID: {id}");
             return View(task);
         }
 
         public async Task<IActionResult> Create()
         {
+            _logger.LogInformation("User accessed the Create Task page");
             ViewBag.EmployeeId = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName"); // Makes sure all employees displayed
             ViewBag.ProjectId = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name"); // Makes sure all projects displayed
             return View();
@@ -53,6 +66,7 @@ namespace ERMS.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Model state is invalid in Create method");
                 ViewBag.Employees = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName"); // Makes sure all employees displayed
                 ViewBag.Projects = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name"); // Makes sure all projects displayed
                 return View(task);
@@ -60,23 +74,34 @@ namespace ERMS.Controllers
 
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
+                _logger.LogWarning("Unauthorized access attempt to Create Task");
                 return Forbid(); // Prevent unauthorized access
             }
 
             await _taskApi.CreateAsync(task); // Create task via API
+            _logger.LogInformation($"Task created successfully: {task.Title}");
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                _logger.LogWarning("Task ID is null in Edit method");
+                return NotFound();
+            }
 
             var task = await _taskApi.GetByIdAsync(id.Value); // Fetch task by ID from the API
-            if (task == null) return NotFound();
+            if (task == null)
+            {
+                _logger.LogWarning($"Task with ID {id} not found in Edit method");
+                return NotFound();
+            }
 
             ViewBag.EmployeeId = new SelectList(await _employeeApi.GetAllAsync(), "Id", "FullName", task.EmployeeId); // Makes sure all employees displayed
             ViewBag.ProjectId = new SelectList(await _projectApi.GetAllAsync(), "Id", "Name", task.ProjectId); // Makes sure all projects displayed
 
+            _logger.LogInformation($"User accessed Edit page for Task ID: {id}");
             return View(task);
         }
 
@@ -85,32 +110,49 @@ namespace ERMS.Controllers
         public async Task<IActionResult> Edit(int id, TaskItem task)
         {
             if (id != task.Id)
+            {
+                _logger.LogWarning($"Task ID mismatch in Edit method: {id} != {task.Id}");
                 return NotFound();
+            }
 
             if (!(User.IsInRole("Manager") || User.IsInRole("Admin")))
+            {
+                _logger.LogWarning("Unauthorized access attempt to Edit Task");
                 return Forbid();
+            }
 
             var allEmployees = await _employeeApi.GetAllAsync();
             var allProjects = await _projectApi.GetAllAsync();
 
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Model state is invalid in Edit method");
                 ViewBag.Employees = new SelectList(allEmployees, "Id", "FullName", task.EmployeeId);
                 ViewBag.Projects = new SelectList(allProjects, "Id", "Name", task.ProjectId);
                 return View(task);
             }
 
             await _taskApi.UpdateAsync(task);
+            _logger.LogInformation($"Task updated successfully: {task.Title}");
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                _logger.LogWarning("Task ID is null in Delete method");
+                return NotFound();
+            }
 
             var task = await _taskApi.GetByIdAsync(id.Value); // Fetch task by ID from the API
-            if (task == null) return NotFound();
+            if (task == null)
+            {
+                _logger.LogWarning($"Task with ID {id} not found in Delete method");
+                return NotFound();
+            }
 
+            _logger.LogInformation($"User accessed Delete page for Task ID: {id}");
             return View(task);
         }
 
@@ -120,10 +162,12 @@ namespace ERMS.Controllers
         {
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
+                _logger.LogWarning("Unauthorized access attempt to Delete Task");
                 return Forbid(); // Prevent unauthorized access
             }
 
             await _taskApi.DeleteAsync(id); // Delete task via API
+            _logger.LogInformation($"Task deleted successfully: {id}");
             return RedirectToAction(nameof(Index));
         }
 

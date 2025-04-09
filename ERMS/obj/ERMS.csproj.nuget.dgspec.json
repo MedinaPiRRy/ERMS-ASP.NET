@@ -76,6 +76,18 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[8.0.7, )"
+            },
+            "NLog.Config": {
+              "target": "Package",
+              "version": "[4.7.15, )"
+            },
+            "NLog.Extensions.Logging": {
+              "target": "Package",
+              "version": "[5.4.0, )"
+            },
+            "NLog.Web.AspNetCore": {
+              "target": "Package",
+              "version": "[5.4.0, )"
             }
           },
           "imports": [

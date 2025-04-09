@@ -12,16 +12,20 @@ namespace ERMS.Controllers.api
     public class TaskItemsApiController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<TaskItemsApiController> _logger;
 
-        public TaskItemsApiController(ApplicationDbContext context)
+        public TaskItemsApiController(ApplicationDbContext context, ILogger<TaskItemsApiController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
         {
+            _logger.LogInformation("[API-Tasks] Fetching all tasks with associated project and assigned employee");
+
             return await _context.TaskItems // Fetch all tasks with their associated project and assigned employee
             .Include(t => t.Project)
             .Include(t => t.AssignedEmployee)
@@ -39,9 +43,11 @@ namespace ERMS.Controllers.api
 
             if (taskItem == null)
             {
+                _logger.LogWarning($"[API-Tasks] Task with ID {id} not found");
                 return NotFound();
             }
 
+            _logger.LogInformation($"[API-Tasks] Task with ID {id} found: {taskItem.Title}");
             return taskItem;
         }
 
@@ -51,6 +57,8 @@ namespace ERMS.Controllers.api
         {
             _context.TaskItems.Add(taskItem); // Add new task
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"[API-Tasks] Task created with ID {taskItem.Id}: {taskItem.Title}");
             return CreatedAtAction("GetTask", new { id = taskItem.Id }, taskItem);
         }
 
@@ -60,6 +68,7 @@ namespace ERMS.Controllers.api
         {
             if (id != taskItem.Id)
             {
+                _logger.LogWarning($"[API-Tasks] Task ID mismatch: {id} != {taskItem.Id}");
                 return BadRequest();
             }
 
@@ -67,6 +76,7 @@ namespace ERMS.Controllers.api
 
             await _context.SaveChangesAsync();
 
+            _logger.LogInformation($"[API-Tasks] Task with ID {id} updated: {taskItem.Title}");
             return NoContent();
         }
 
@@ -77,10 +87,13 @@ namespace ERMS.Controllers.api
             var taskItem = await _context.TaskItems.FindAsync(id); // Fetch task by ID
             if (taskItem == null)
             {
+                _logger.LogWarning($"[API-Tasks] Task with ID {id} not found for deletion");
                 return NotFound();
             }
             _context.TaskItems.Remove(taskItem); // Remove task
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"[API-Tasks] Task with ID {id} deleted");
             return NoContent();
         }
     }

@@ -15,31 +15,44 @@ namespace ERMS.Controllers
     {
         private readonly IProjectApiService _api;
         private readonly IEmployeeApiService _employeeApi;
+        private readonly ILogger<ProjectsController> _logger;
 
-        public ProjectsController(IProjectApiService api, IEmployeeApiService employeeApi)
+        public ProjectsController(IProjectApiService api, IEmployeeApiService employeeApi, ILogger<ProjectsController> logger)
         {
             _api = api;
             _employeeApi = employeeApi;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
+            _logger.LogInformation("User accessed the Projects Index page");
             var projects = await _api.GetAllAsync(); // Fetch all projects from the API
             return View(projects);
         }
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) 
+            {
+                _logger.LogWarning("Project ID is null in Details action");
+                return NotFound(); 
+            }
 
             var project = await _api.GetByIdAsync(id.Value); // Fetch project by ID from the API
-            if (project == null) return NotFound();
+            if (project == null) 
+            {
+                _logger.LogWarning($"Project with ID {id} not found in Details action");
+                return NotFound();
+            }
 
+            _logger.LogInformation($"User accessed the Details page for Project ID: {id}");
             return View(project);
         }
 
         public async Task<IActionResult> Create()
         {
+            _logger.LogInformation("User accessed the Create Project page");
             var employees = (await _employeeApi.GetAllAsync()); // Fetch all employees from the API
 
             ViewBag.AllEmployees = new MultiSelectList(employees, "Id", "FullName");
@@ -56,12 +69,16 @@ namespace ERMS.Controllers
 
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("ModelState is invalid in Create action");
                 ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", AssignedEmployeeIds);
                 return View(project);
             }
 
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
-                return Forbid();
+            {
+                _logger.LogWarning("Unauthorized access attempt in Create action");
+                return Forbid(); // Prevent unauthorized access
+            }
 
             project.AssignedEmployees = allEmployees
                 .Where(e => AssignedEmployeeIds.Contains(e.Id))
@@ -70,25 +87,36 @@ namespace ERMS.Controllers
             var success = await _api.CreateAsync(project);
             if (!success)
             {
+                _logger.LogError("Error creating project in Create action");
                 ModelState.AddModelError("", "Error creating project.");
                 ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", AssignedEmployeeIds);
                 return View(project);
             }
 
+            _logger.LogInformation($"Project created successfully: {project.Name}");
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) 
+            {
+                _logger.LogWarning("Project ID is null in Edit action");
+                return NotFound();
+            }
 
             var project = await _api.GetByIdAsync(id.Value); // Fetch project by ID from the API
-            if (project == null) return NotFound();
+            if (project == null) 
+            {
+                _logger.LogWarning($"Project with ID {id} not found in Edit action");
+                return NotFound();
+            }
 
             var employees = await _employeeApi.GetAllAsync(); // Fetch all employees from the API
             var selected = project.AssignedEmployees?.Select(e => e.Id); // Get selected employee IDs
             ViewBag.AllEmployees = new MultiSelectList(employees, "Id", "FullName", selected); // Makes sure employees are displayed
 
+            _logger.LogInformation($"User accessed the Edit page for Project ID: {id}");
             return View(project);
         }
 
@@ -100,39 +128,59 @@ namespace ERMS.Controllers
 
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
+                _logger.LogWarning("Unauthorized access attempt in Edit action");
                 return Forbid(); // Prevent unauthorized access
             }
 
-            if (id != project.Id) return NotFound();
+            if (id != project.Id) 
+            {
+                _logger.LogWarning($"Project ID mismatch in Edit action: {id} != {project.Id}");
+                return NotFound();
+            }
 
             project.AssignedEmployees = (await _employeeApi.GetAllAsync()) // Fetch all employees from the API
                 .Where(e => AssignedEmployeeIds.Contains(e.Id))
                 .ToList();
 
             if (!ModelState.IsValid) {
+                _logger.LogWarning("ModelState is invalid in Edit action");
                 var employees = await _employeeApi.GetAllAsync(); // Fetch all employees from the API
                 ViewBag.AllEmployees = new MultiSelectList(employees, "Id", "FullName", AssignedEmployeeIds); // Makes sure employees are displayed
                 return View(project);
             };
 
             var success = await _api.UpdateAsync(project); // Update project via API
-            if (!success) ModelState.AddModelError("", "Error updating project.");
+            if (!success)
+            {
+                _logger.LogError($"Error updating project in Edit action: {project.Name}");
+                ModelState.AddModelError("", "Error updating project.");
+            }
 
             var allEmployees = await _employeeApi.GetAllAsync(); // Fetch all employees from the API
             var selected = project.AssignedEmployees?.Select(e => e.Id); // Get selected employee IDs
 
             ViewBag.AllEmployees = new MultiSelectList(allEmployees, "Id", "FullName", selected); // Makes sure employees are displayed
 
+            _logger.LogInformation($"Project updated successfully: {project.Name}");
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                _logger.LogWarning("Project ID is null in Delete action");
+                return NotFound();
+            }
 
             var project = await _api.GetByIdAsync(id.Value); // Fetch project by ID from the API
-            if (project == null) return NotFound();
+            if (project == null)
+            {
+                _logger.LogWarning($"Project with ID {id} not found in Delete action"); 
+                return NotFound();
+            }
 
+            _logger.LogInformation($"User accessed the Delete page for Project ID: {id}");
             return View(project);
         }
 
@@ -142,6 +190,7 @@ namespace ERMS.Controllers
         {
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
+                _logger.LogWarning("Unauthorized access attempt in DeleteConfirmed action");
                 return Forbid(); // Prevent unauthorized access
             }
 
@@ -149,12 +198,14 @@ namespace ERMS.Controllers
 
             if (!success)
             {
+                _logger.LogInformation($"DELETE failed: {id}"); // Log the failure
                 Console.WriteLine($"DELETE failed: {id}");
                 ModelState.AddModelError("", "Error deleting project. Please try again.");
                 var project = await _api.GetByIdAsync(id); // Fetch project by ID from the API
                 return View("Delete", project); // Redisplay Delete view with message
             }
 
+            _logger.LogInformation($"Project deleted successfully: {id}");
             return RedirectToAction(nameof(Index));
         }
 
