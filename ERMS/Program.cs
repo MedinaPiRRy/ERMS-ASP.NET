@@ -44,6 +44,8 @@ namespace ERMS
 
                 // This makes sure that the Services are registered.
                 // This provides the base address for the HttpClient used in the services.
+                // THE BASE URL RIGHT NOW IS NOT THE SAME THAT THE ONE USED WHEN DEPLOYING THE APP
+                // THIS BASE url NEEDS TO CHANGE TO 8081 PORT BEFORE DEPLOYING
                 builder.Services.AddHttpClient<EmployeeApiService>(client =>
                 {
                     client.BaseAddress = new Uri("http://localhost:5000/");

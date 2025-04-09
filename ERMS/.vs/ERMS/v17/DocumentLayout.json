@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\controllers\\api\\taskitemsapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:controllers\\api\\taskitemsapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -13,10 +17,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\controllers\\api\\employeesapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:controllers\\api\\employeesapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{627A7000-C550-4484-B078-F10D71A20FAA}|ERMS.csproj|c:\\users\\daniel\\source\\repos\\erms-asp.net\\erms\\controllers\\taskitemscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -211,17 +211,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAADgv5IAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAhwC8AAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-01T15:09:36.253Z",
               "EditorCaption": ""
@@ -236,8 +236,7 @@
               "RelativeToolTip": "Controllers\\HomeController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-04T21:22:53.878Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-04T21:22:53.878Z"
             },
             {
               "$type": "Document",
@@ -249,8 +248,7 @@
               "RelativeToolTip": "Controllers\\ProjectsController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAM8AAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T15:27:47.533Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-01T15:27:47.533Z"
             },
             {
               "$type": "Document",
@@ -262,12 +260,11 @@
               "RelativeToolTip": "Controllers\\TaskItemsController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAKkAAABHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T15:28:22.111Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-01T15:28:22.111Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "EmployeesApiController.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\api\\EmployeesApiController.cs",
               "RelativeDocumentMoniker": "Controllers\\api\\EmployeesApiController.cs",
@@ -280,7 +277,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "ProjectsApiController.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\api\\ProjectsApiController.cs",
               "RelativeDocumentMoniker": "Controllers\\api\\ProjectsApiController.cs",
@@ -288,18 +285,17 @@
               "RelativeToolTip": "Controllers\\api\\ProjectsApiController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAJEAAABiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-04T20:23:42.379Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-04T20:23:42.379Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "TaskItemsApiController.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\api\\TaskItemsApiController.cs",
               "RelativeDocumentMoniker": "Controllers\\api\\TaskItemsApiController.cs",
               "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\api\\TaskItemsApiController.cs",
               "RelativeToolTip": "Controllers\\api\\TaskItemsApiController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF8AAABNAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-04T20:27:10.777Z",
               "EditorCaption": ""
@@ -340,8 +336,7 @@
               "RelativeToolTip": "Views\\TaskItems\\Create.cshtml",
               "ViewState": "AgIAABIAAAAAAAAAAAAAACcAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-04T20:02:59.18Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-04T20:02:59.18Z"
             },
             {
               "$type": "Document",
@@ -353,8 +348,7 @@
               "RelativeToolTip": "Views\\Projects\\Edit.cshtml",
               "ViewState": "AgIAAA0AAAAAAAAAAAAswDAAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-04T19:48:34.997Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-04T19:48:34.997Z"
             },
             {
               "$type": "Document",
@@ -366,8 +360,7 @@
               "RelativeToolTip": "Views\\Employees\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-09T00:28:37.842Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-09T00:28:37.842Z"
             },
             {
               "$type": "Document",
@@ -379,8 +372,7 @@
               "RelativeToolTip": "Views\\Projects\\Create.cshtml",
               "ViewState": "AgIAABUAAAAAAAAAAAAAACwAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-04T18:51:23.766Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-04T18:51:23.766Z"
             },
             {
               "$type": "Document",
@@ -392,8 +384,7 @@
               "RelativeToolTip": "Views\\Employees\\Edit.cshtml",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAAA4AAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-05T21:52:10.929Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-05T21:52:10.929Z"
             },
             {
               "$type": "Document",
@@ -405,8 +396,7 @@
               "RelativeToolTip": "Views\\Employees\\Details.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-09T00:28:24.374Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-09T00:28:24.374Z"
             },
             {
               "$type": "Document",
@@ -418,8 +408,7 @@
               "RelativeToolTip": "nlog.config",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-04-09T18:21:11.704Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-09T18:21:11.704Z"
             },
             {
               "$type": "Document",
@@ -431,8 +420,7 @@
               "RelativeToolTip": "Views\\Employees\\Create.cshtml",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAA4AAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-05T21:48:33.729Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-05T21:48:33.729Z"
             },
             {
               "$type": "Document",
@@ -444,8 +432,7 @@
               "RelativeToolTip": "Views\\TaskItems\\Edit.cshtml",
               "ViewState": "AgIAABIAAAAAAAAAAAAAACwAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-09T00:29:13.028Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-09T00:29:13.028Z"
             },
             {
               "$type": "Document",
@@ -457,8 +444,7 @@
               "RelativeToolTip": "..\\ERMS.Tests\\TaskItemsControllerTests.cs",
               "ViewState": "AgIAAIQAAAAAAAAAAAAkwJcAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-05T23:27:01.869Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-05T23:27:01.869Z"
             },
             {
               "$type": "Document",
@@ -470,7 +456,8 @@
               "RelativeToolTip": "Services\\TaskItemApiService.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAADwvyEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-04T21:11:42.306Z"
+              "WhenOpened": "2025-04-04T21:11:42.306Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -482,7 +469,8 @@
               "RelativeToolTip": "Models\\TaskItem.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T15:15:23.587Z"
+              "WhenOpened": "2025-04-01T15:15:23.587Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -494,7 +482,8 @@
               "RelativeToolTip": "Services\\ProjectApiService.cs",
               "ViewState": "AgIAABUAAAAAAAAAAAAUwCQAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-04T21:10:15.113Z"
+              "WhenOpened": "2025-04-04T21:10:15.113Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -506,7 +495,8 @@
               "RelativeToolTip": "Services\\EmployeeApiService.cs",
               "ViewState": "AgIAABIAAAAAAAAAAADwvzMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-04T20:36:26.797Z"
+              "WhenOpened": "2025-04-04T20:36:26.797Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -554,7 +544,8 @@
               "RelativeToolTip": "Views\\TaskItems\\Delete.cshtml",
               "ViewState": "AgIAAB4AAAAAAAAAAAAswDUAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-04T22:27:17.007Z"
+              "WhenOpened": "2025-04-04T22:27:17.007Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -710,7 +701,8 @@
               "RelativeToolTip": "Models\\Employee.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T15:12:34.566Z"
+              "WhenOpened": "2025-04-01T15:12:34.566Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -758,7 +750,8 @@
               "RelativeToolTip": "Views\\TaskItems\\Details.cshtml",
               "ViewState": "AgIAABIAAAAAAAAAAAAwwCcAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-04T20:12:23.433Z"
+              "WhenOpened": "2025-04-04T20:12:23.433Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -770,7 +763,8 @@
               "RelativeToolTip": "Views\\TaskItems\\Index.cshtml",
               "ViewState": "AgIAAB0AAAAAAAAAAAAwwDEAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-04T20:12:08.599Z"
+              "WhenOpened": "2025-04-04T20:12:08.599Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -782,7 +776,8 @@
               "RelativeToolTip": "Models\\Project.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T15:13:22.35Z"
+              "WhenOpened": "2025-04-01T15:13:22.35Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -794,7 +789,8 @@
               "RelativeToolTip": "Models\\ApplicationUser.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T15:08:51.753Z"
+              "WhenOpened": "2025-04-01T15:08:51.753Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
