@@ -1,0 +1,80 @@
+﻿Capstone Project Proposal: Enterprise Resource Management System (ERMS)
+
+Team Members:
+- Daniel Medina Lopez
+- Dylan Gonzales
+
+Github Link to Repo:
+(https://github.com/MedinaPiRRy/ERMS-ASP.NET) - Please See Commit Messages as they are meaningful and descriptive.
+
+Project Overview:
+The Enterprise Resource Management System (ERMS) is a full-stack web platform designed to streamline the management of 
+employees, projects, and task assignments in a professional organization. It features secure user authentication and 
+role-based access (Admin, Manager, Employee), integrated APIs, centralized logging, and Azure deployment.
+
+Technologies Used:
+- ASP.NET Core MVC for front-end and controller logic (Scaffolded controllers at first, then they were edited)
+- ASP.NET Core Web API for decoupled data access (REST APIs are located in Controllers/APIs and are also deployed to Azure)
+- SQL Server with Entity Framework Core for database interactions (Employees, Projects, and TaskItem tables)
+- Azure SQL Database for cloud-hosted DB (Migrated LocalDB from my personal computer to Azure SQL using SSMS)
+- NLog for logging 
+- Coverlet + xUnit for automated testing and code coverage reporting (Tests are passing with a 10% Line Coverage & 24% Branch Coverage)
+- Git + GitHub for source control and versioning (GitHub was used to host the code for our app. Commit messages are meaningful and descriptive))
+- SSMS and Azure Data Studio for DB management and deployment (SSMS was used for LocalDB and Azure for the PROD Database)
+
+Development Environment:
+- IDE: Visual Studio 2022
+- Framework: .NET 8.0
+- Database: SQL Server (local and Azurefor hosted database)
+- Hosting: Azure App Service + Azure SQL Database
+- Tools: GitHub, SSMS, Azure Portal, Postman, .NET CLI, .NET Hosting Bundle (Used at first since we though the app was going to
+be hosted on IIS, however, after being able to create a student account on Azure, we decided to host it there)
+
+Key Features:
+✔️ Role-based Authentication with ASP.NET Identity (Admin, Manager, Employee)
+✔️ CRUD Operations for Employees, Projects, and TaskItems (Based on Roles)
+✔️ Task linking with status and priority, and relational data integrity (FKs)
+✔️ RESTful APIs consumed via `HttpClient` from MVC services layer (Found on Services/ folder)
+✔️ Controllers secured via runtime role checks (Ex: `User.IsInRole`) [We decided to use this Approach as the tag [Authorize] was not working]
+✔️ Full API and MVC controller testing with Moq + Coverlet (59 tests in total)
+✔️ Seeded roles and default passwords for fast setup (This is declared in Progam.cs)
+✔️ Deployment to Azure (App Service + SQL DB)
+✔️ Logs captured and written using NLog (Log files are located in the Logs folder))
+✔️ Project tracked on GitHub with meaningful commits
+
+Project Status:
+✅ MVC Controllers & Views implemented and tested
+✅ APIs created for Employees, Projects, TaskItems
+✅ Connected services for consuming APIs from MVC
+✅ Unit Tests written for all Controllers (60+)
+✅ Coverage: 10% Line | 24% Branch via Coverlet
+✅ Database migrated and deployed to Azure
+✅ Live app functional with cloud-hosted DB
+✅ Logs generated via NLog on all actions
+✅ Stored Procedures and SSRS reports (These diagrams and procedures will be stored in project)
+
+Test Coverage:
+We created a total of 59 tests that tackled the following areas: (Line Coverage: 10% | Branch Coverage 24%)
+- EmployeesController
+- ProjectsController
+- TaskItemsController
+- EmployeesApiController
+- ProjectsApiController
+- TaskItemsApiController
+
+Admin User:
+Please use the following credentials to log in as an Manager user, who can perform CRUD operations to database:
+- Username: manager.test.com
+- Password: Password123$
+
+Restrictions:
+- The Admin and Manager users can perform CRUD operations on the Employees, Projects, and TaskItems tables.
+- The Employee user can only perform View data from these tables, but cannot modify or delete them.
+We did not included as it was not specify on the project requirements, however, we believe that this would make more sense for a real app:
+- The Admin user can perform CRUD operations on the Employees, Projects, and TaskItems tables.
+- The Manager user can perform CRUD operations on the Projects, and TaskItems tables as well as Modify Employees who are assigned to them.
+- The Employee user can only perform CRUD operations on the TaskItems table, but cannot modify or delete them.
+
+GitHub Repo:
+https://github.com/MedinaPiRRy/ERMS-ASP.NET
+
