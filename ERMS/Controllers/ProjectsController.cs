@@ -77,7 +77,7 @@ namespace ERMS.Controllers
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
                 _logger.LogWarning("Unauthorized access attempt in Create action");
-                return Forbid(); // Prevent unauthorized access
+                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
             }
 
             project.AssignedEmployees = allEmployees
@@ -129,7 +129,7 @@ namespace ERMS.Controllers
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
                 _logger.LogWarning("Unauthorized access attempt in Edit action");
-                return Forbid(); // Prevent unauthorized access
+                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
             }
 
             if (id != project.Id) 
@@ -191,7 +191,7 @@ namespace ERMS.Controllers
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
                 _logger.LogWarning("Unauthorized access attempt in DeleteConfirmed action");
-                return Forbid(); // Prevent unauthorized access
+                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
             }
 
             var success = await _api.DeleteAsync(id);   // Delete project via API

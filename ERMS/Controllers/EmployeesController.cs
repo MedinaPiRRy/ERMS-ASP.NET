@@ -73,7 +73,7 @@ namespace ERMS.Controllers
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
                 _logger.LogError("User attempted to create an employee without proper authorization");
-                return Forbid(); // Prevent unauthorized access
+                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
             }
 
             if (string.IsNullOrEmpty(employee.Manager))
@@ -125,7 +125,7 @@ namespace ERMS.Controllers
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
                 _logger.LogError("User attempted to edit an employee without proper authorization");
-                return Forbid(); // Prevent unauthorized access
+                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
             }
 
             if (!ModelState.IsValid) {
@@ -176,7 +176,7 @@ namespace ERMS.Controllers
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
                 _logger.LogError("User attempted to delete an employee without proper authorization");
-                return Forbid(); // Prevent unauthorized access
+                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
             }
 
             await _api.DeleteAsync(id); // Delete employee via API

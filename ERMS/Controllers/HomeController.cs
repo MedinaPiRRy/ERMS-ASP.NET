@@ -31,5 +31,11 @@ namespace ERMS.Controllers
             _logger.LogError("An error occurred on the Error page");
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
     }
 }

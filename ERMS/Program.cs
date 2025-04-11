@@ -99,6 +99,13 @@ namespace ERMS
                     }
                 }
 
+                // Redirect to AccessDenied page if user is not authorized
+                builder.Services.ConfigureApplicationCookie(options =>
+                {
+                    options.AccessDeniedPath = "/Home/AccessDenied"; // or another controller if you prefer
+                });
+
+
                 var app = builder.Build();
 
                 // Call the SeedRoles method to create roles

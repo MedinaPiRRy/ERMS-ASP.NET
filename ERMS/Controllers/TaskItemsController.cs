@@ -75,7 +75,7 @@ namespace ERMS.Controllers
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
                 _logger.LogWarning("Unauthorized access attempt to Create Task");
-                return Forbid(); // Prevent unauthorized access
+                return RedirectToAction("AccessDenied", "Home");; // Prevent unauthorized access
             }
 
             await _taskApi.CreateAsync(task); // Create task via API
@@ -118,7 +118,7 @@ namespace ERMS.Controllers
             if (!(User.IsInRole("Manager") || User.IsInRole("Admin")))
             {
                 _logger.LogWarning("Unauthorized access attempt to Edit Task");
-                return Forbid();
+                return RedirectToAction("AccessDenied", "Home");;
             }
 
             var allEmployees = await _employeeApi.GetAllAsync();
@@ -163,7 +163,7 @@ namespace ERMS.Controllers
             if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
                 _logger.LogWarning("Unauthorized access attempt to Delete Task");
-                return Forbid(); // Prevent unauthorized access
+                return RedirectToAction("AccessDenied", "Home");; // Prevent unauthorized access
             }
 
             await _taskApi.DeleteAsync(id); // Delete task via API
