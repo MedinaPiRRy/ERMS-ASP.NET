@@ -48,31 +48,31 @@ namespace ERMS
                 // THIS BASE url NEEDS TO CHANGE TO 8081 PORT BEFORE DEPLOYING
                 builder.Services.AddHttpClient<EmployeeApiService>(client =>
                 {
-                    client.BaseAddress = new Uri("http://localhost:5000/");
+                    client.BaseAddress = new Uri("https://ermsappcapstone.azurewebsites.net/");
                 });
                 builder.Services.AddHttpClient<ProjectApiService>(client =>
                 {
-                    client.BaseAddress = new Uri("http://localhost:5000/");
+                    client.BaseAddress = new Uri("https://ermsappcapstone.azurewebsites.net/");
                 });
 
                 builder.Services.AddHttpClient<TaskItemApiService>(client =>
                 {
-                    client.BaseAddress = new Uri("http://localhost:5000/");
+                    client.BaseAddress = new Uri("https://ermsappcapstone.azurewebsites.net/");
                 });
 
                 // Register the services for dependency injection
                 builder.Services.AddHttpClient<IEmployeeApiService, EmployeeApiService>(client =>
                 {
-                    client.BaseAddress = new Uri("http://localhost:5000/");
+                    client.BaseAddress = new Uri("https://ermsappcapstone.azurewebsites.net/");
                 });
                 builder.Services.AddHttpClient<IProjectApiService, ProjectApiService>(client =>
                 {
-                    client.BaseAddress = new Uri("http://localhost:5000/");
+                    client.BaseAddress = new Uri("https://ermsappcapstone.azurewebsites.net/");
                 });
 
                 builder.Services.AddHttpClient<ITaskItemApiService, TaskItemApiService>(client =>
                 {
-                    client.BaseAddress = new Uri("http://localhost:5000/");
+                    client.BaseAddress = new Uri("https://ermsappcapstone.azurewebsites.net/");
                 });
 
 
