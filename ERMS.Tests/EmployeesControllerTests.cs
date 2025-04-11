@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace ERMS.Tests
 {
@@ -19,9 +20,13 @@ namespace ERMS.Tests
         private readonly Mock<IEmployeeApiService> _mockApiService;
         private readonly EmployeesController _controller;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<EmployeesController> _logger;
 
         public EmployeesControllerTests()
         {
+            var mockLogger = new Mock<ILogger<EmployeesController>>();
+            _logger = mockLogger.Object;
+
             // Set up in-memory database for testing
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDB")
@@ -29,7 +34,7 @@ namespace ERMS.Tests
             _context = new ApplicationDbContext(options);
 
             _mockApiService = new Mock<IEmployeeApiService>();
-            _controller = new EmployeesController(_mockApiService.Object, _context);
+            _controller = new EmployeesController(_mockApiService.Object, _context, _logger);
         }
 
         private void SetUserWithRoles(Controller controller, string[] roles)

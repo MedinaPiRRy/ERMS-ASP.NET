@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace ERMS.Tests
 {
@@ -17,13 +18,17 @@ namespace ERMS.Tests
         private readonly Mock<IEmployeeApiService> _employeeApi;
         private readonly Mock<IProjectApiService> _projectApi;
         private readonly TaskItemsController _controller;
+        private readonly ILogger<TaskItemsController> _logger;
 
         public TaskItemsControllerTests()
         {
+            var mockLogger = new Mock<ILogger<TaskItemsController>>();
+            _logger = mockLogger.Object;
+
             _taskApi = new Mock<ITaskItemApiService>();
             _employeeApi = new Mock<IEmployeeApiService>();
             _projectApi = new Mock<IProjectApiService>();
-            _controller = new TaskItemsController(_taskApi.Object, _employeeApi.Object, _projectApi.Object);
+            _controller = new TaskItemsController(_taskApi.Object, _employeeApi.Object, _projectApi.Object, _logger);
         }
 
         // Set up in-memory database for testing (User Roles)

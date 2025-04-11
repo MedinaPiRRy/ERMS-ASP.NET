@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Castle.Core.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace ERMS.Tests
 {
@@ -16,12 +18,16 @@ namespace ERMS.Tests
         private readonly Mock<IProjectApiService> _projectMock;
         private readonly Mock<IEmployeeApiService> _employeeMock;
         private readonly ProjectsController _controller;
+        private readonly ILogger<ProjectsController> _logger;
 
         public ProjectsControllerTests()
         {
+            var mockLogger = new Mock<ILogger<ProjectsController>>();
+            _logger = mockLogger.Object;
+
             _projectMock = new Mock<IProjectApiService>();
             _employeeMock = new Mock<IEmployeeApiService>();
-            _controller = new ProjectsController(_projectMock.Object, _employeeMock.Object);
+            _controller = new ProjectsController(_projectMock.Object, _employeeMock.Object, _logger);
         }
 
         // Set up in-memory database for testing (User Roles)

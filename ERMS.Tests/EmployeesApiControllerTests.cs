@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using ERMS.Controllers;
 using ERMS.Services;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Microsoft.AspNetCore.Identity;
 
@@ -21,13 +21,21 @@ namespace ERMS.Tests
         private readonly Mock<IEmployeeApiService> _mockApiService;
         private readonly EmployeesController _controller;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<EmployeesController> _employeeLogger;
+        private readonly ILogger<EmployeesApiController> _employeeApiLogger;
 
         public EmployeesApiControllerTests()
         {
+            var mockEmployeeLogger = new Mock<ILogger<EmployeesController>>();
+            var mockEmployeeApiLogger = new Mock<ILogger<EmployeesApiController>>();
+
+            _employeeLogger = mockEmployeeLogger.Object;
+            _employeeApiLogger = mockEmployeeApiLogger.Object;
+
             _context = GetContext("TestDB2");
 
             _mockApiService = new Mock<IEmployeeApiService>();
-            _controller = new EmployeesController(_mockApiService.Object, _context);
+            _controller = new EmployeesController(_mockApiService.Object, _context, _employeeLogger);
         }
 
         private ApplicationDbContext GetContext(string dbName)
@@ -73,7 +81,7 @@ namespace ERMS.Tests
             });
             await context.SaveChangesAsync();
 
-            var controller = new EmployeesApiController(context);
+            var controller = new EmployeesApiController(context, _employeeApiLogger);
             var result = await controller.GetEmployees();
 
             var actionResult = Assert.IsType<ActionResult<IEnumerable<Employee>>>(result);
@@ -94,7 +102,7 @@ namespace ERMS.Tests
             context.Employees.Add(emp);
             await context.SaveChangesAsync();
 
-            var controller = new EmployeesApiController(context);
+            var controller = new EmployeesApiController(context, _employeeApiLogger);
             var result = await controller.GetEmployee(1);
 
             Assert.Equal(emp.FullName, result.Value.FullName);
@@ -104,7 +112,7 @@ namespace ERMS.Tests
         public async Task GetEmployee_InvalidId_ReturnsNotFound()
         {
             var context = GetContext(nameof(GetEmployee_InvalidId_ReturnsNotFound));
-            var controller = new EmployeesApiController(context);
+            var controller = new EmployeesApiController(context, _employeeApiLogger);
 
             var result = await controller.GetEmployee(999);
 
@@ -116,7 +124,7 @@ namespace ERMS.Tests
         {
             // Use ApplicationDbContext to create a new in-memory database for testing
             var context = GetContext(nameof(PostEmployee_AddsEmployee));
-            var controller = new EmployeesApiController(context);
+            var controller = new EmployeesApiController(context, _employeeApiLogger);
 
             // Create mock services 
             var userManagerMock = new Mock<UserManager<IdentityUser>>(
@@ -176,7 +184,7 @@ namespace ERMS.Tests
             context.Employees.Add(emp);
             await context.SaveChangesAsync();
 
-            var controller = new EmployeesApiController(context);
+            var controller = new EmployeesApiController(context, _employeeApiLogger);
             emp.FullName = "New Name";
             var result = await controller.PutEmployee(1, emp);
 
@@ -187,7 +195,7 @@ namespace ERMS.Tests
         public async Task PutEmployee_MismatchedId_ReturnsBadRequest()
         {
             var context = GetContext(nameof(PutEmployee_MismatchedId_ReturnsBadRequest));
-            var controller = new EmployeesApiController(context);
+            var controller = new EmployeesApiController(context, _employeeApiLogger);
 
             var result = await controller.PutEmployee(1, new Employee { Id = 2 });
 
@@ -198,7 +206,7 @@ namespace ERMS.Tests
         public async Task PutEmployee_NotFound_ReturnsNotFound()
         {
             var context = GetContext(nameof(PutEmployee_NotFound_ReturnsNotFound));
-            var controller = new EmployeesApiController(context);
+            var controller = new EmployeesApiController(context, _employeeApiLogger);
 
             var result = await controller.PutEmployee(1, new Employee { Id = 1 });
 
@@ -218,7 +226,7 @@ namespace ERMS.Tests
             });
             await context.SaveChangesAsync();
 
-            var controller = new EmployeesApiController(context);
+            var controller = new EmployeesApiController(context, _employeeApiLogger);
             var result = await controller.DeleteEmployee(1);
 
             Assert.IsType<NoContentResult>(result);
@@ -228,7 +236,7 @@ namespace ERMS.Tests
         public async Task DeleteEmployee_InvalidId_ReturnsNotFound()
         {
             var context = GetContext(nameof(DeleteEmployee_InvalidId_ReturnsNotFound));
-            var controller = new EmployeesApiController(context);
+            var controller = new EmployeesApiController(context, _employeeApiLogger);
 
             var result = await controller.DeleteEmployee(999);
 

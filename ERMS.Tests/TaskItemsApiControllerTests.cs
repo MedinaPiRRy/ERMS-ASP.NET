@@ -6,11 +6,21 @@ using ERMS.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace ERMS.Tests
 {
     public class TaskItemsApiControllerTests
     {
+        private readonly ILogger<TaskItemsApiController> _logger;
+
+        public TaskItemsApiControllerTests()
+        {
+            var mockLogger = new Mock<ILogger<TaskItemsApiController>>();
+            _logger = mockLogger.Object;
+        }
+
         private ApplicationDbContext GetContext(string dbName)
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -37,7 +47,7 @@ namespace ERMS.Tests
             });
             await context.SaveChangesAsync();
 
-            var controller = new TaskItemsApiController(context);
+            var controller = new TaskItemsApiController(context, _logger);
             var result = await controller.GetTasks();
 
             var actionResult = Assert.IsType<ActionResult<IEnumerable<TaskItem>>>(result);
@@ -63,7 +73,7 @@ namespace ERMS.Tests
 
             await context.SaveChangesAsync();
 
-            var controller = new TaskItemsApiController(context);
+            var controller = new TaskItemsApiController(context, _logger);
             var result = await controller.GetTask(1);
 
             Assert.Equal("Fix Bug", result.Value.Title);
@@ -73,7 +83,7 @@ namespace ERMS.Tests
         public async Task GetTask_InvalidId_ReturnsNotFound()
         {
             var context = GetContext(nameof(GetTask_InvalidId_ReturnsNotFound));
-            var controller = new TaskItemsApiController(context);
+            var controller = new TaskItemsApiController(context, _logger);
 
             var result = await controller.GetTask(999);
 
@@ -84,7 +94,7 @@ namespace ERMS.Tests
         public async Task PostTask_CreatesTask()
         {
             var context = GetContext(nameof(PostTask_CreatesTask));
-            var controller = new TaskItemsApiController(context);
+            var controller = new TaskItemsApiController(context, _logger);
 
             var task = new TaskItem {
                 Id = 1,
@@ -117,7 +127,7 @@ namespace ERMS.Tests
             await context.SaveChangesAsync();
 
             task.Title = "Updated";
-            var controller = new TaskItemsApiController(context);
+            var controller = new TaskItemsApiController(context, _logger);
             var result = await controller.PutTask(1, task);
 
             Assert.IsType<NoContentResult>(result);
@@ -127,7 +137,7 @@ namespace ERMS.Tests
         public async Task PutTask_MismatchedId_ReturnsBadRequest()
         {
             var context = GetContext(nameof(PutTask_MismatchedId_ReturnsBadRequest));
-            var controller = new TaskItemsApiController(context);
+            var controller = new TaskItemsApiController(context, _logger);
 
             var result = await controller.PutTask(1, new TaskItem { Id = 2 });
 
@@ -149,7 +159,7 @@ namespace ERMS.Tests
             });
             await context.SaveChangesAsync();
 
-            var controller = new TaskItemsApiController(context);
+            var controller = new TaskItemsApiController(context, _logger);
             var result = await controller.DeleteTask(1);
 
             Assert.IsType<NoContentResult>(result);
@@ -159,7 +169,7 @@ namespace ERMS.Tests
         public async Task DeleteTask_InvalidId_ReturnsNotFound()
         {
             var context = GetContext(nameof(DeleteTask_InvalidId_ReturnsNotFound));
-            var controller = new TaskItemsApiController(context);
+            var controller = new TaskItemsApiController(context, _logger);
 
             var result = await controller.DeleteTask(999);
 

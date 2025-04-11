@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using ERMS.Controllers.api;
 using ERMS.Models;
 using ERMS.Data;
+using Moq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -14,6 +15,14 @@ namespace ERMS.Tests
 {
     public class ProjectsApiControllerTests
     {
+        private readonly ILogger<ProjectsApiController> _logger;
+
+        public ProjectsApiControllerTests()
+        {
+            var mockLogger = new Mock<ILogger<ProjectsApiController>>();
+            _logger = mockLogger.Object;
+        }
+
         // This method creates a new in-memory database for each test case
         // and initializes the ProjectsApiController with it.
         // This allows for isolated testing of the controller's methods
@@ -24,7 +33,7 @@ namespace ERMS.Tests
                 .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
             var context = new ApplicationDbContext(options);
-            var controller = new ProjectsApiController(context);
+            var controller = new ProjectsApiController(context, _logger);
             return (controller, context);
         }
 
