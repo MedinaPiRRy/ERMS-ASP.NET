@@ -17,13 +17,15 @@ namespace ERMS.Controllers
         private readonly IEmployeeApiService _employeeApi;
         private readonly IProjectApiService _projectApi;
         private readonly ILogger<TaskItemsController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public TaskItemsController(ITaskItemApiService taskApi, IEmployeeApiService employeeApi, IProjectApiService projectApi, ILogger<TaskItemsController> logger)
+        public TaskItemsController(ITaskItemApiService taskApi, IEmployeeApiService employeeApi, IProjectApiService projectApi, ILogger<TaskItemsController> logger, ApplicationDbContext context)
         {
             _taskApi = taskApi;
             _employeeApi = employeeApi;
             _projectApi = projectApi;
             _logger = logger;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
@@ -72,10 +74,13 @@ namespace ERMS.Controllers
                 return View(task);
             }
 
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            bool isManager = User.IsInRole("Manager");
+            bool isAdmin = User.IsInRole("Admin");
+
+            if (!(isManager || isAdmin))
             {
-                _logger.LogWarning("Unauthorized access attempt to Create Task");
-                return RedirectToAction("AccessDenied", "Home");; // Prevent unauthorized access
+                _logger.LogWarning("Unauthorized access attempt in Edit action");
+                return RedirectToAction("AccessDenied", "Home");
             }
 
             await _taskApi.CreateAsync(task); // Create task via API
@@ -115,14 +120,35 @@ namespace ERMS.Controllers
                 return NotFound();
             }
 
-            if (!(User.IsInRole("Manager") || User.IsInRole("Admin")))
+            var loggedInEmail = User.Identity?.Name;
+            var loggedInEmployee = await _context.Employees
+                .FirstOrDefaultAsync(e => e.Email == loggedInEmail);
+
+            if (loggedInEmployee == null)
             {
-                _logger.LogWarning("Unauthorized access attempt to Edit Task");
-                return RedirectToAction("AccessDenied", "Home");;
+                _logger.LogError("Logged in user not found in Employees table.");
+                return RedirectToAction("AccessDenied", "Home");
             }
+
+            var targetTask = await _context.TaskItems.FindAsync(id);
+            if (targetTask == null)
+            {
+                _logger.LogWarning($"Task with ID {id} not found.");
+                return NotFound();
+            }
+
+            bool isAdmin = User.IsInRole("Admin");
+            bool isManager = User.IsInRole("Manager");
+            bool isEmployee = User.IsInRole("Employee");
 
             var allEmployees = await _employeeApi.GetAllAsync();
             var allProjects = await _projectApi.GetAllAsync();
+
+            if (isEmployee && targetTask.EmployeeId != loggedInEmployee.Id)
+            {
+                _logger.LogWarning($"Employee {loggedInEmployee.FullName} attempted to edit task {id} not assigned to them.");
+                return RedirectToAction("AccessDenied", "Home");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -160,10 +186,13 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            bool isManager = User.IsInRole("Manager");
+            bool isAdmin = User.IsInRole("Admin");
+
+            if (!(isManager || isAdmin))
             {
-                _logger.LogWarning("Unauthorized access attempt to Delete Task");
-                return RedirectToAction("AccessDenied", "Home");; // Prevent unauthorized access
+                _logger.LogWarning("Unauthorized access attempt in Edit action");
+                return RedirectToAction("AccessDenied", "Home");
             }
 
             await _taskApi.DeleteAsync(id); // Delete task via API

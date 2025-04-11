@@ -74,10 +74,13 @@ namespace ERMS.Controllers
                 return View(project);
             }
 
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            bool isManager = User.IsInRole("Manager");
+            bool isAdmin = User.IsInRole("Admin");
+
+            if (!(isManager || isAdmin)) 
             {
-                _logger.LogWarning("Unauthorized access attempt in Create action");
-                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
+                _logger.LogWarning("Unauthorized access attempt in Edit action");
+                return RedirectToAction("AccessDenied", "Home");
             }
 
             project.AssignedEmployees = allEmployees
@@ -126,10 +129,13 @@ namespace ERMS.Controllers
         {
             ModelState.Remove("AssignedEmployees"); // Remove the AssignedEmployees from ModelState to avoid validation errors
 
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            bool isManager = User.IsInRole("Manager");
+            bool isAdmin = User.IsInRole("Admin");
+
+            if (!(isManager || isAdmin)) // If not Manager or Admin → block
             {
                 _logger.LogWarning("Unauthorized access attempt in Edit action");
-                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
+                return RedirectToAction("AccessDenied", "Home");
             }
 
             if (id != project.Id) 
@@ -188,10 +194,13 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            bool isManager = User.IsInRole("Manager");
+            bool isAdmin = User.IsInRole("Admin");
+
+            if (!(isManager || isAdmin)) // If not Manager or Admin → block
             {
-                _logger.LogWarning("Unauthorized access attempt in DeleteConfirmed action");
-                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
+                _logger.LogWarning("Unauthorized access attempt in Edit action");
+                return RedirectToAction("AccessDenied", "Home");
             }
 
             var success = await _api.DeleteAsync(id);   // Delete project via API

@@ -32,9 +32,7 @@
 
             <div class="form-group">
                 <label asp-for="Manager" class="control-label"></label>
-                <select asp-for="Manager" class="form-control" asp-items="ViewBag.Managers">
-                    <option value="">Unassigned</option>
-                </select>
+                <select asp-for="Manager" class="form-control" asp-items="ViewBag.Managers"></select>
                 <span asp-validation-for="Manager" class="text-danger"></span>
             </div>
 

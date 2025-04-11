@@ -12,6 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ERMS.Tests
 {
@@ -86,8 +87,22 @@ namespace ERMS.Tests
         [Fact]
         public async Task Create_ReturnsViewResult()
         {
+            _context.Employees.Add(new Employee
+            {
+                Id = 100,
+                FullName = "Test Manager",
+                Email = "manager@company.com",
+                Role = "Manager",
+                Manager = "Unassigned"
+            });
+            await _context.SaveChangesAsync();
+
+            SetUserWithRoles(_controller, new[] { "Admin" });
+
             var result = await _controller.Create();
             var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.NotNull(viewResult.ViewData["Managers"]);
+            Assert.NotNull(viewResult.ViewData["Roles"]);
         }
 
         [Fact]
@@ -96,18 +111,31 @@ namespace ERMS.Tests
             var employee = new Employee { Id = 1, FullName = "Test Employee", Email = "test@email.com" };
             _mockApiService.Setup(s => s.CreateAsync(employee)).ReturnsAsync(true);
 
-            SetUserWithRoles(_controller, new[] { "Admin" }); // Set user role to Admin
+            SetUserWithRoles(_controller, new[] { "Admin" });
 
             var result = await _controller.Create(employee);
 
-            Assert.IsType<ForbidResult>(result);
+            var redirect = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirect.ActionName);
         }
 
         [Fact]
         public async Task Edit_ReturnsView_withEmployee()
         {
-            var employee = new Employee { Id = 1, FullName = "Test Employee", Email = "test@email.com" };
+            var employee = new Employee
+            {
+                Id = 101,
+                FullName = "Test Employee",
+                Email = "test@email.com",
+                Manager = "Manager Name",
+                Role = "Employee"
+            };
+
+            _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+
             _mockApiService.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(employee);
+            SetUserWithRoles(_controller, new[] { "Admin" });
 
             var result = await _controller.Edit(1);
 
@@ -125,12 +153,25 @@ namespace ERMS.Tests
 
             var result = await _controller.DeleteConfirmed(1);
 
-            Assert.IsType<ForbidResult>(result);
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectResult.ActionName);
         }
 
         [Fact]
         public async Task Create_Get_ReturnsViewWithDropdowns()
         {
+            _context.Employees.Add(new Employee
+            {
+                Id = 99,
+                FullName = "Manager Person",
+                Role = "Manager",
+                Email = "manager@email.com",
+                Manager = "Unassigned"
+            });
+            await _context.SaveChangesAsync();
+
+            SetUserWithRoles(_controller, new[] { "Admin" });
+
             var result = await _controller.Create();
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.NotNull(viewResult.ViewData["Managers"]);
@@ -171,7 +212,8 @@ namespace ERMS.Tests
             SetUserWithRoles(_controller, new[] { "Admin" }); // Set user role to Admin
 
             var result = await _controller.DeleteConfirmed(1);
-            Assert.IsType<ForbidResult>(result);
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectResult.ActionName);
         }
 
 

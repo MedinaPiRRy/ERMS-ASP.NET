@@ -56,6 +56,12 @@ namespace ERMS.Controllers
         {
             await LoadEmployeeDropdowns(); // Load dropdowns for managers and roles
 
+            if (!User.IsInRole("Admin") && !User.IsInRole("Employee") && !User.IsInRole("Manager"))
+            {
+                _logger.LogError("User attempted to create an employee without proper authorization");
+                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
+            }
+
             _logger.LogInformation("User accessed Create page for Employees");
             return View();
         }
@@ -65,12 +71,12 @@ namespace ERMS.Controllers
         public async Task<IActionResult> Create(Employee employee)
         {
             if (!ModelState.IsValid) { 
-                await LoadEmployeeDropdowns(employee.Manager, employee.Role);
+                await LoadEmployeeDropdowns();
                 _logger.LogInformation("User accessed Create page for Employees with invalid model state");
                 return View(employee);
             }
 
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            if (!User.IsInRole("Admin"))
             {
                 _logger.LogError("User attempted to create an employee without proper authorization");
                 return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
@@ -101,6 +107,12 @@ namespace ERMS.Controllers
                 return NotFound();
             };
 
+            if (!User.IsInRole("Admin") && !User.IsInRole("Employee") && !User.IsInRole("Manager"))
+            {
+                _logger.LogError("User attempted to edit an employee without proper authorization");
+                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
+            }
+
             var employee = await _api.GetByIdAsync(id.Value); // Fetch employee by ID from the API
             if (employee == null) 
             {
@@ -116,19 +128,47 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Employee employee)
         {
-            if (id != employee.Id) 
+            if (id != employee.Id)
             {
                 _logger.LogError("User attempted to edit an employee with mismatched ID: {Id}", id);
                 return NotFound();
             }
-            // Check if the user is in the Manager role
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+
+            // Check if user is in Manager role but NOT Admin
+            if (User.IsInRole("Manager") && !User.IsInRole("Admin"))
+            {
+                var loggedInEmail = User.Identity?.Name;
+                var loggedInEmployee = await _context.Employees
+                    .FirstOrDefaultAsync(e => e.Email == loggedInEmail);
+
+                if (loggedInEmployee == null)
+                {
+                    _logger.LogError("Logged in manager not found in Employees table.");
+                    return RedirectToAction("AccessDenied", "Home");
+                }
+
+                var targetEmployee = await _context.Employees.FindAsync(id);
+
+                if (targetEmployee == null)
+                {
+                    _logger.LogError("Target employee not found.");
+                    return NotFound();
+                }
+
+                if (targetEmployee.Manager != loggedInEmployee.FullName)
+                {
+                    _logger.LogWarning($"Manager {loggedInEmployee.FullName} tried editing employee not under their management.");
+                    return RedirectToAction("AccessDenied", "Home");
+                }
+            }
+            else if (!User.IsInRole("Admin"))
             {
                 _logger.LogError("User attempted to edit an employee without proper authorization");
                 return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
             }
 
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid)
+            {
                 _logger.LogInformation("User accessed Edit page for Employees with invalid model state");
                 await LoadEmployeeDropdowns(employee.Manager, employee.Role);
                 return View(employee);
@@ -136,19 +176,21 @@ namespace ERMS.Controllers
 
             if (string.IsNullOrEmpty(employee.Manager))
             {
-                employee.Manager = "Unassigned"; // Set manager to Unassigned if manager was not sellected
+                employee.Manager = "Unassigned";
             }
 
-            var success = await _api.UpdateAsync(employee); // Update employee via API
-            if (!success) 
+            var success = await _api.UpdateAsync(employee);
+            if (!success)
             {
                 _logger.LogError("Error updating employee: {Employee}", employee);
                 ModelState.AddModelError("", "Error updating employee.");
+                return View(employee);
             }
 
-            _logger.LogInformation($"User created employee successfully");
+            _logger.LogInformation("User updated employee successfully");
             return RedirectToAction(nameof(Index));
         }
+
 
         public async Task<IActionResult> Delete(int? id)
         {
@@ -156,6 +198,12 @@ namespace ERMS.Controllers
             {
                 _logger.LogError("User attempted to delete an employee with null ID");
                 return NotFound();
+            }
+
+            if (!User.IsInRole("Admin") && !User.IsInRole("Employee") && !User.IsInRole("Manager"))
+            {
+                _logger.LogError("User attempted to edit an employee without proper authorization");
+                return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access
             }
 
             var employee = await _api.GetByIdAsync(id.Value); // Fetch employee by ID from the API
@@ -173,7 +221,7 @@ namespace ERMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (!User.IsInRole("Manager") || User.IsInRole("Admin"))
+            if (!User.IsInRole("Admin"))
             {
                 _logger.LogError("User attempted to delete an employee without proper authorization");
                 return RedirectToAction("AccessDenied", "Home"); // Prevent unauthorized access

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using ERMS.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ERMS.Tests
 {
@@ -19,16 +21,24 @@ namespace ERMS.Tests
         private readonly Mock<IProjectApiService> _projectApi;
         private readonly TaskItemsController _controller;
         private readonly ILogger<TaskItemsController> _logger;
+        private readonly ApplicationDbContext _context;
 
         public TaskItemsControllerTests()
         {
             var mockLogger = new Mock<ILogger<TaskItemsController>>();
             _logger = mockLogger.Object;
 
+            // Set up in-memory database for testing
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) 
+                .Options;
+
+            _context = new ApplicationDbContext(options);
+
             _taskApi = new Mock<ITaskItemApiService>();
             _employeeApi = new Mock<IEmployeeApiService>();
             _projectApi = new Mock<IProjectApiService>();
-            _controller = new TaskItemsController(_taskApi.Object, _employeeApi.Object, _projectApi.Object, _logger);
+            _controller = new TaskItemsController(_taskApi.Object, _employeeApi.Object, _projectApi.Object, _logger, _context);
         }
 
         // Set up in-memory database for testing (User Roles)
@@ -132,7 +142,41 @@ namespace ERMS.Tests
         [Fact]
         public async Task Edit_InvalidId_ReturnsNotFound()
         {
-            _taskApi.Setup(t => t.GetByIdAsync(999)).ReturnsAsync((TaskItem)null!);
+            var employee = new Employee
+            {
+                Id = 1,
+                FullName = "Test Employee",
+                Email = "test@company.com",
+                Role = "Employee",
+                Manager = "Unassigned"
+            };
+            _context.Employees.Add(employee);
+
+            var task = new TaskItem
+            {
+                Id = 1,
+                Title = "Task 1",
+                Description = "Fix bug",
+                Status = "Open",
+                Priority = "High",
+                EmployeeId = 1,
+                ProjectId = 1
+            };
+            _context.TaskItems.Add(task);
+            await _context.SaveChangesAsync();
+
+            _taskApi.Setup(t => t.UpdateAsync(It.IsAny<TaskItem>())).ReturnsAsync(true);
+
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, "test@company.com"),
+                new Claim(ClaimTypes.Role, "Employee")
+            }, "mock");
+            var principal = new ClaimsPrincipal(identity);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = principal }
+            };
 
             var result = await _controller.Edit(999);
 
@@ -142,14 +186,44 @@ namespace ERMS.Tests
         [Fact]
         public async Task Edit_Post_InvalidModel_ReturnsView()
         {
-            var task = new TaskItem { Id = 1 };
-            _controller.ControllerContext.ModelState.Clear(); 
-            _controller.ModelState.AddModelError("Title", "Required");
+            var email = "test@company.com";
 
-            _employeeApi.Setup(e => e.GetAllAsync()).ReturnsAsync(new List<Employee>());
-            _projectApi.Setup(p => p.GetAllAsync()).ReturnsAsync(new List<Project>());
+            var employee = new Employee
+            {
+                Id = 1,
+                FullName = "Test Employee",
+                Email = email,
+                Role = "Employee",
+                Manager = "Unassigned"
+            };
 
-            SetUserWithRoles(_controller, new[] { "Manager" });
+            var task = new TaskItem
+            {
+                Id = 1,
+                Title = "Task 1",
+                Description = "Fix bug",
+                Status = "Open",
+                Priority = "High",
+                EmployeeId = 1, // must match employee.Id
+                ProjectId = 1
+            };
+
+            _context.Employees.Add(employee);
+            _context.TaskItems.Add(task);
+            await _context.SaveChangesAsync();
+
+            _taskApi.Setup(t => t.UpdateAsync(It.IsAny<TaskItem>())).ReturnsAsync(true);
+
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, email),
+                new Claim(ClaimTypes.Role, "Employee")
+            }, "mock");
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
+            };
 
             var result = await _controller.Edit(1, task);
 
@@ -160,10 +234,44 @@ namespace ERMS.Tests
         [Fact]
         public async Task Edit_Post_ValidModel_Redirects()
         {
-            var task = new TaskItem { Id = 1 };
-            _taskApi.Setup(t => t.UpdateAsync(task)).ReturnsAsync(true);
+            var email = "test@company.com";
 
-            SetUserWithRoles(_controller, new[] { "Manager" }); // Set user role to Manager
+            var employee = new Employee
+            {
+                Id = 1,
+                FullName = "Test Employee",
+                Email = email,
+                Role = "Employee",
+                Manager = "Unassigned"
+            };
+
+            var task = new TaskItem
+            {
+                Id = 1,
+                Title = "Task 1",
+                Description = "Fix bug",
+                Status = "Open",
+                Priority = "High",
+                EmployeeId = 1, // must match employee.Id
+                ProjectId = 1
+            };
+
+            _context.Employees.Add(employee);
+            _context.TaskItems.Add(task);
+            await _context.SaveChangesAsync();
+
+            _taskApi.Setup(t => t.UpdateAsync(It.IsAny<TaskItem>())).ReturnsAsync(true);
+
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, email),
+                new Claim(ClaimTypes.Role, "Employee")
+            }, "mock");
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
+            };
 
             var result = await _controller.Edit(1, task);
 

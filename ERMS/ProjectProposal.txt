@@ -63,8 +63,12 @@ We created a total of 59 tests that tackled the following areas: (Line Coverage:
 - TaskItemsApiController
 
 Admin User:
-Please use the following credentials to log in as an Manager user, who can perform CRUD operations to database:
-- Username: manager.test.com
+Please use the following credentials to log in as a Manager or admin user, who can perform CRUD operations to database:
+MANAGER:
+- Username: manager@test.com
+- Password: Password123$
+ADMIN:
+- Username: admin@test.com
 - Password: Password123$
 
 Restrictions:
