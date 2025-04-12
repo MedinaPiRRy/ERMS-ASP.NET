@@ -63,21 +63,22 @@ We created a total of 59 tests that tackled the following areas: (Line Coverage:
 - TaskItemsApiController
 
 Admin User:
-Please use the following credentials to log in as a Manager or admin user, who can perform CRUD operations to database:
+Please use the following credentials to log in as a Manager, admin or employee user, who can perform CRUD operations to database:
 MANAGER:
 - Username: manager@test.com
 - Password: Password123$
 ADMIN:
 - Username: admin@test.com
 - Password: Password123$
+EMPLOYEE:
+- Username:	employee@test.com
+- Password: Password123$
 
-Restrictions:
-- The Admin and Manager users can perform CRUD operations on the Employees, Projects, and TaskItems tables.
-- The Employee user can only perform View data from these tables, but cannot modify or delete them.
-We did not included as it was not specify on the project requirements, however, we believe that this would make more sense for a real app:
+Restrictions: (Although the instructions for the project were loose on this topic, we decided to implement this as a real app)
 - The Admin user can perform CRUD operations on the Employees, Projects, and TaskItems tables.
 - The Manager user can perform CRUD operations on the Projects, and TaskItems tables as well as Modify Employees who are assigned to them.
-- The Employee user can only perform CRUD operations on the TaskItems table, but cannot modify or delete them.
+- The Employee user can only perform CRUD operations on the TaskItems table, on items assigned to them but cannot delete them.
+- The User without a role cannot access any of the CRUD operations. However, can access the index.
 
 GitHub Repo:
 https://github.com/MedinaPiRRy/ERMS-ASP.NET
