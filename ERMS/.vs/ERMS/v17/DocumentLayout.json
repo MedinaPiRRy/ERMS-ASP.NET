@@ -227,7 +227,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
@@ -270,19 +270,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ProjectsApiController.cs",
-              "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\api\\ProjectsApiController.cs",
-              "RelativeDocumentMoniker": "Controllers\\api\\ProjectsApiController.cs",
-              "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\api\\ProjectsApiController.cs",
-              "RelativeToolTip": "Controllers\\api\\ProjectsApiController.cs",
-              "ViewState": "AgIAAHcAAAAAAAAAAAAYwJYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-04T20:23:42.379Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "EmployeesController.cs",
               "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\EmployeesController.cs",
@@ -302,9 +289,22 @@
               "RelativeDocumentMoniker": "ProjectProposal.txt",
               "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\ProjectProposal.txt",
               "RelativeToolTip": "ProjectProposal.txt",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEEAAABOAAAAAAAAAA==",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAABIAAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
               "WhenOpened": "2025-04-11T20:50:28.908Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ProjectsApiController.cs",
+              "DocumentMoniker": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\api\\ProjectsApiController.cs",
+              "RelativeDocumentMoniker": "Controllers\\api\\ProjectsApiController.cs",
+              "ToolTip": "C:\\Users\\Daniel\\source\\repos\\ERMS-ASP.NET\\ERMS\\Controllers\\api\\ProjectsApiController.cs",
+              "RelativeToolTip": "Controllers\\api\\ProjectsApiController.cs",
+              "ViewState": "AgIAAHcAAAAAAAAAAAAYwJYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-04T20:23:42.379Z",
               "EditorCaption": ""
             },
             {
