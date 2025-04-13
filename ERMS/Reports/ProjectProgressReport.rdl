@@ -9,7 +9,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.0.20283.0</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2025-04-13T05:40:44.9714807Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2025-04-13T06:20:58.5946396Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -28,24 +28,30 @@
     <DataSet Name="DataSet1">
       <Query>
         <DataSourceName>Azure_ERMS_DataSource</DataSourceName>
-        <CommandText>SELECT
-  Projects.Id AS [Projects Id]
-  ,Projects.Name
-  ,Projects.Description AS [Projects Description]
-  ,Projects.StartDate
-  ,Projects.EndDate
-  ,Projects.Status AS [Projects Status]
-  ,TaskItems.Id AS [TaskItems Id]
-  ,TaskItems.Title
-  ,TaskItems.Description AS [TaskItems Description]
-  ,TaskItems.Status AS [TaskItems Status]
-  ,TaskItems.Priority
-  ,TaskItems.ProjectId
-  ,TaskItems.EmployeeId
-FROM
-  Projects
-  INNER JOIN TaskItems
-    ON Projects.Id = TaskItems.ProjectId</CommandText>
+        <CommandText>SELECT 
+    p.Id AS ProjectId,
+    p.Name,
+    p.Description,
+    p.StartDate,
+    p.EndDate,
+    p.Status,
+    COUNT(t.Id) AS TotalTasks,
+    SUM(CASE WHEN t.Status = 'Completed' THEN 1 ELSE 0 END) AS CompletedTasks,
+    CASE 
+        WHEN COUNT(t.Id) = 0 THEN 0 
+        ELSE (SUM(CASE WHEN t.Status = 'Completed' THEN 1 ELSE 0 END) * 100.0 / COUNT(t.Id))
+    END AS ProgressPercentage
+FROM Projects p
+LEFT JOIN TaskItems t 
+    ON p.Id = t.ProjectId
+GROUP BY 
+    p.Id, 
+    p.Name, 
+    p.Description, 
+    p.StartDate, 
+    p.EndDate, 
+    p.Status
+</CommandText>
         <rd:DesignerState>
           <QueryDefinition xmlns="http://schemas.microsoft.com/ReportingServices/QueryDefinition/Relational">
             <SelectedColumns>
@@ -76,16 +82,12 @@ FROM
         </rd:DesignerState>
       </Query>
       <Fields>
-        <Field Name="Projects_Id">
-          <DataField>Projects Id</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
         <Field Name="Name">
           <DataField>Name</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Projects_Description">
-          <DataField>Projects Description</DataField>
+        <Field Name="Description">
+          <DataField>Description</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="StartDate">
@@ -96,36 +98,24 @@ FROM
           <DataField>EndDate</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
         </Field>
-        <Field Name="Projects_Status">
-          <DataField>Projects Status</DataField>
+        <Field Name="Status">
+          <DataField>Status</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="TaskItems_Id">
-          <DataField>TaskItems Id</DataField>
+        <Field Name="TotalTasks">
+          <DataField>TotalTasks</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Title">
-          <DataField>Title</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="CompletedTasks">
+          <DataField>CompletedTasks</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="TaskItems_Description">
-          <DataField>TaskItems Description</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="TaskItems_Status">
-          <DataField>TaskItems Status</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Priority">
-          <DataField>Priority</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
+        <Field Name="ProgressPercentage">
+          <DataField>ProgressPercentage</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
         <Field Name="ProjectId">
           <DataField>ProjectId</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="EmployeeId">
-          <DataField>EmployeeId</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
       </Fields>
@@ -176,7 +166,7 @@ FROM
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Projects Description</Value>
+                                  <Value>Description</Value>
                                   <Style>
                                     <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -299,7 +289,7 @@ FROM
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Projects Status</Value>
+                                  <Value>Status</Value>
                                   <Style>
                                     <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -340,7 +330,7 @@ FROM
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Title</Value>
+                                  <Value>Total Tasks</Value>
                                   <Style>
                                     <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -381,7 +371,7 @@ FROM
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Task Items Description</Value>
+                                  <Value>Completed Tasks</Value>
                                   <Style>
                                     <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -422,10 +412,11 @@ FROM
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Task Items Status</Value>
+                                  <Value>Progress Percentage</Value>
                                   <Style>
                                     <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
+                                    <Format>0.00;(0.00)</Format>
                                     <Color>#666666</Color>
                                   </Style>
                                 </TextRun>
@@ -443,7 +434,6 @@ FROM
                             <BottomBorder>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
-                              <Width>1pt</Width>
                             </BottomBorder>
                             <BackgroundColor>White</BackgroundColor>
                             <PaddingLeft>2pt</PaddingLeft>
@@ -463,7 +453,7 @@ FROM
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Priority</Value>
+                                  <Value>Project Id</Value>
                                   <Style>
                                     <FontSize>11pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -502,14 +492,14 @@ FROM
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Projects_Description">
+                        <Textbox Name="Description">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Projects_Description.Value</Value>
+                                  <Value>=Fields!Description.Value</Value>
                                   <Style>
                                     <FontWeight>Normal</FontWeight>
                                     <Color>#333333</Color>
@@ -519,7 +509,7 @@ FROM
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Projects_Description</rd:DefaultName>
+                          <rd:DefaultName>Description</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -601,14 +591,14 @@ FROM
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Projects_Status">
+                        <Textbox Name="Status">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Projects_Status.Value</Value>
+                                  <Value>=Fields!Status.Value</Value>
                                   <Style>
                                     <FontWeight>Normal</FontWeight>
                                     <Color>#333333</Color>
@@ -618,7 +608,7 @@ FROM
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Projects_Status</rd:DefaultName>
+                          <rd:DefaultName>Status</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -634,14 +624,14 @@ FROM
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Title">
+                        <Textbox Name="TotalTasks">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Title.Value</Value>
+                                  <Value>=First(Fields!TotalTasks.Value)</Value>
                                   <Style>
                                     <FontWeight>Normal</FontWeight>
                                     <Color>#333333</Color>
@@ -651,7 +641,7 @@ FROM
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Title</rd:DefaultName>
+                          <rd:DefaultName>TotalTasks</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -667,14 +657,14 @@ FROM
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="TaskItems_Description">
+                        <Textbox Name="CompletedTasks">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!TaskItems_Description.Value</Value>
+                                  <Value>=First(Fields!CompletedTasks.Value)</Value>
                                   <Style>
                                     <FontWeight>Normal</FontWeight>
                                     <Color>#333333</Color>
@@ -684,7 +674,7 @@ FROM
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>TaskItems_Description</rd:DefaultName>
+                          <rd:DefaultName>CompletedTasks</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -700,16 +690,17 @@ FROM
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="TaskItems_Status">
+                        <Textbox Name="ProgressPercentage">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!TaskItems_Status.Value</Value>
+                                  <Value>=First(Fields!ProgressPercentage.Value)</Value>
                                   <Style>
                                     <FontWeight>Normal</FontWeight>
+                                    <Format>0.00;(0.00)</Format>
                                     <Color>#333333</Color>
                                   </Style>
                                 </TextRun>
@@ -717,7 +708,7 @@ FROM
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>TaskItems_Status</rd:DefaultName>
+                          <rd:DefaultName>ProgressPercentage</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -733,14 +724,14 @@ FROM
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Priority">
+                        <Textbox Name="ProjectId">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Priority.Value</Value>
+                                  <Value>=First(Fields!ProjectId.Value)</Value>
                                   <Style>
                                     <FontWeight>Normal</FontWeight>
                                     <Color>#333333</Color>
@@ -750,7 +741,7 @@ FROM
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Priority</rd:DefaultName>
+                          <rd:DefaultName>ProjectId</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -784,7 +775,7 @@ FROM
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>1.28125in</Size>
+                    <Size>1.29167in</Size>
                     <CellContents>
                       <Textbox Name="Textbox17">
                         <CanGrow>true</CanGrow>
@@ -842,7 +833,7 @@ FROM
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>1.28125in</Size>
+                    <Size>1.29167in</Size>
                     <CellContents>
                       <Textbox Name="Name">
                         <CanGrow>true</CanGrow>
@@ -895,7 +886,7 @@ FROM
             <DataSetName>DataSet1</DataSetName>
             <Top>0.5in</Top>
             <Height>0.5in</Height>
-            <Width>9.28125in</Width>
+            <Width>9.29167in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
