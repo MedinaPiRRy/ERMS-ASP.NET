@@ -2,7 +2,7 @@ Capstone Project Proposal: Enterprise Resource Management System (ERMS)
 
 Team Members:
 - Daniel Medina Lopez (991658620)
-- Dylan Gonzales 
+- Dylan Gonzales (991395312)
 - Amir Barakat (991592931)
 
 GitHub Repository:
